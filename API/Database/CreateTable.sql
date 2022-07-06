@@ -3,7 +3,7 @@
 CREATE EXTENSION pgcrypto; -- To Hash Passwords
 CREATE TYPE GENDER AS ENUM('MALE', 'FEMALE', 'OTHER');
 
-CREATE TABLE User (
+CREATE TABLE Account (
     national_code VARCHAR(100) PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE User (
 
 CREATE TABLE Address(
     address_id SERIAL PRIMARY KEY,
-    national_code VARCHAR(100) REFERENCES User, -- FK
+    national_code VARCHAR(100) REFERENCES Account, -- FK
     country VARCHAR(25) NOT NULL,
     city VARCHAR(25) NOT NULL,
     street VARCHAR(25) NOT NULL,
@@ -28,9 +28,9 @@ CREATE TABLE Address(
 -------------------------------------------------------------------------------------
 
 CREATE TYPE DELIVERY AS ENUM('PREMIUM', 'NORMAL', 'CHEAP');
-CREATE TABLE Order(
+CREATE TABLE OrderItem(
     order_id SERIAL PRIMARY KEY,
-    national_code VARCHAR(100) REFERENCES User, -- FK
+    national_code VARCHAR(100) REFERENCES Account, -- FK
     description TEXT,
     address VARCHAR(100) NOT NULL,
     delivery_method DELIVERY NOT NULL ,
@@ -39,7 +39,7 @@ CREATE TABLE Order(
 
 CREATE TABLE TicketTracking(
     ticket_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES Order,
+    order_id INT REFERENCES OrderItem,
     subject VARCHAR(50) NOT NULL,
     ticket_date TIMESTAMP NOT NULL
 );
@@ -68,7 +68,7 @@ CREATE TABLE Product(
 CREATE TABLE Review(
     review_id SERIAL PRIMARY KEY,
     product_id INT REFERENCES Product, -- FK
-    national_code VARCHAR(100) REFERENCES User,
+    national_code VARCHAR(100) REFERENCES Account,
     rating INT CHECK ( 0 <= rating AND rating <= 5 )
 );
 
@@ -91,7 +91,7 @@ CREATE TABLE Order_Product_Counter(
     product_id INT,
     PRIMARY KEY (product_id, order_id),
     FOREIGN KEY (product_id) REFERENCES Product,
-    FOREIGN KEY (order_id) REFERENCES Order,
+    FOREIGN KEY (order_id) REFERENCES OrderItem,
     product_count INT NOT NULL
 );
 

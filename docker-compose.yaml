@@ -7,6 +7,7 @@ services:
       - ./env/postgres.env
     volumes:
       - postgres:/var/lib/postgresql/data
+      - ./API/Database/CreateTable.sql:/docker-entrypoint-initdb.d/Database.sql
     ports:
       - '5432:5432'
     restart: unless-stopped
@@ -20,10 +21,6 @@ services:
     ports:
       - '5050:80'
     restart: unless-stopped
-
-#  go:
-#    image: golang:1.18
-#
 
 volumes:
   postgres:
