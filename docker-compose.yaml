@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    env_file:
+      - ./env/postgres.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    env_file:
+      - ./env/pgadmin.env
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - '5050:80'
+    restart: unless-stopped
+
+#  go:
+#    image: golang:1.18
+#
+
+volumes:
+  postgres:
+  pgadmin:
