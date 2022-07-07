@@ -27,7 +27,7 @@ func (dbClient *Postgresql) Init() error {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	log.Print(fmt.Sprintf("Connected to Mysql or port %s", DbPort))
+	log.Print(fmt.Sprintf("Connected to PostgreSQL on port %s", DbPort))
 	return nil
 }
 
@@ -37,24 +37,4 @@ func (dbClient *Postgresql) Close() error {
 
 func (dbClient *Postgresql) GetDB() *sql.DB {
 	return dbClient.db
-}
-
-func main(dbClient *Postgresql) error {
-	DbUsername := os.Getenv("DB_USERNAME")
-	DbPassword := os.Getenv("DB_PASSWORD")
-	DbHost := os.Getenv("DB_HOST")
-	DbPort := os.Getenv("DB_PORT")
-	DbName := os.Getenv("DB_NAME")
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", DbUsername, DbPassword, DbHost, DbPort, DbName)
-	var err error
-	dbClient.db, err = sql.Open("postgres", connectionString)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	err = dbClient.db.Ping()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	log.Print(fmt.Sprintf("Connected to Mysql or port %s", DbPort))
-	return nil
 }
