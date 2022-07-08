@@ -48,7 +48,6 @@ CREATE TABLE Message(
     message_id SERIAL PRIMARY KEY,
     ticket_id INT REFERENCES TicketTracking, -- FK
     message_text VARCHAR(200) NOT NULL,
-    attachment BYTEA,
     message_date TIMESTAMP NOT NULL
 );
 
@@ -58,7 +57,6 @@ CREATE TYPE COLOR AS ENUM('RED', 'BLUE', 'ORANGE', 'GREEN', 'WHITE', 'BLACK');
 CREATE TABLE Product(
     product_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    ProductImage BYTEA,
     color COLOR,
     price FLOAT CHECK ( price > 0 ) NOT NULL,
     weight FLOAT CHECK ( weight > 0 ) NOT NULL,
