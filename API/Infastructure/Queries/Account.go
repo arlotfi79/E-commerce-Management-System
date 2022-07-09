@@ -18,7 +18,7 @@ func (UserQuery *UserQuery) CreateUser(account *DataSignatures.Account) error {
 	db := UserQuery.dbClient.GetDB()
 
 	query, err := db.Prepare("INSERT " +
-		"INSERT " +
+		"INTO " +
 		"Account " +
 		"VALUES " +
 		"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10")
