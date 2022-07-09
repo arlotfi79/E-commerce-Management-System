@@ -1,10 +1,9 @@
 -------------------------------------------------------------------------------------
 
-CREATE EXTENSION pgcrypto; -- To Hash Passwords
 CREATE TYPE GENDER AS ENUM('MALE', 'FEMALE', 'OTHER');
 
 CREATE TABLE Account (
-    national_code VARCHAR(100) PRIMARY KEY,
+    account_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     user_name VARCHAR(100) NOT NULL,
@@ -18,11 +17,18 @@ CREATE TABLE Account (
 
 CREATE TABLE Address(
     address_id SERIAL PRIMARY KEY,
-    national_code VARCHAR(100) REFERENCES Account, -- FK
+    account_id INT REFERENCES Account, -- FK
     country VARCHAR(25) NOT NULL,
     city VARCHAR(25) NOT NULL,
     street VARCHAR(25) NOT NULL,
     plaque VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE Notification (
+    notification_id SERIAL PRIMARY KEY,
+    account_id INT REFERENCES Account, -- FK
+    subject VARCHAR(100) NOT NULL,
+    description TEXT NOT NULL
 );
 
 -------------------------------------------------------------------------------------
@@ -30,16 +36,23 @@ CREATE TABLE Address(
 CREATE TYPE DELIVERY AS ENUM('PREMIUM', 'NORMAL', 'CHEAP');
 CREATE TABLE OrderItem(
     order_id SERIAL PRIMARY KEY,
-    national_code VARCHAR(100) REFERENCES Account, -- FK
+    account_id INT REFERENCES Account, -- FK
     description TEXT,
     address VARCHAR(100) NOT NULL,
     delivery_method DELIVERY NOT NULL ,
     order_date TIMESTAMP NOT NULL
 );
 
+CREATE TABLE PromotionCode(
+    promotion_code_id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES OrderItem, -- FK
+    value FLOAT CHECK ( value > 0 ) NOT NULL,
+    expire_date TIMESTAMP NOT NULL
+);
+
 CREATE TABLE TicketTracking(
     ticket_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES OrderItem,
+    order_id INT REFERENCES OrderItem, -- FK
     subject VARCHAR(50) NOT NULL,
     ticket_date TIMESTAMP NOT NULL
 );
@@ -66,7 +79,7 @@ CREATE TABLE Product(
 CREATE TABLE Review(
     review_id SERIAL PRIMARY KEY,
     product_id INT REFERENCES Product, -- FK
-    national_code VARCHAR(100) REFERENCES Account,
+    account_id INT REFERENCES Account, -- FK
     rating INT CHECK ( 0 <= rating AND rating <= 5 )
 );
 
@@ -83,6 +96,24 @@ CREATE TABLE Category(
 
 -------------------------------------------------------------------------------------
 -- Many to Many relations
+
+CREATE TABLE Reaction (
+    review_id INT,
+    account_id INT,
+    PRIMARY KEY (account_id, review_id),
+    FOREIGN KEY (account_id) REFERENCES Account,
+    FOREIGN KEY (review_id) REFERENCES Review,
+    up_vote INT DEFAULT 0,
+    down_vote INT DEFAULT 0
+);
+
+CREATE TABLE WatchList(
+    account_id INT,
+    product_id INT,
+    PRIMARY KEY (account_id, product_id),
+    FOREIGN KEY (account_id) REFERENCES Account,
+    FOREIGN KEY (product_id) REFERENCES Product
+);
 
 CREATE TABLE Order_Product_Counter(
     order_id INT,
