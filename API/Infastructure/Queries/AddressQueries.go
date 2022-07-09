@@ -16,7 +16,7 @@ func NewAddressQuery(dbClient *Database.Postgresql) *AddressQuery {
 
 // -------------------------------- GET ----------------------------------
 
-func (addressQuery *AddressQuery) GetAddressesByAccountID(id string) ([]DataSignatures.Address, error) {
+func (addressQuery *AddressQuery) GetAddressesByAccountID(id uint64) ([]DataSignatures.Address, error) {
 	db := addressQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT address_id, country, city, street, plaque
@@ -53,7 +53,7 @@ func (addressQuery *AddressQuery) GetAddressesByAccountID(id string) ([]DataSign
 
 // -------------------------------- POST ----------------------------------
 
-func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID, address *DataSignatures.Address) error {
+func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID uint64, address *DataSignatures.Address) error {
 	db := addressQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO address (account_id, country, city, street, plaque)

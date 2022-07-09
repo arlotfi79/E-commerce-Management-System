@@ -16,7 +16,7 @@ func NewOrderQuery(dbClient *Database.Postgresql) *OrderQuery {
 
 // -------------------------------- GET ----------------------------------
 
-func (orderQuery *OrderQuery) GetOrdersByAccountID(id string) ([]DataSignatures.Order, error) {
+func (orderQuery *OrderQuery) GetOrdersByAccountID(id uint64) ([]DataSignatures.Order, error) {
 	db := orderQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT order_id, description, delivery_method, order_date, address
