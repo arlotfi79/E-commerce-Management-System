@@ -1,7 +1,7 @@
 package main
 
 import (
-	"DBProject/API/Database"
+	"API/Database"
 	"log"
 )
 
