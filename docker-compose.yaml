@@ -13,18 +13,18 @@ services:
       - '5432:5432'
     restart: unless-stopped
 
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    container_name: Database-PGAdmin
-#    env_file:
-#      - ./env/pgadmin.env
-#    volumes:
-#      - pgadmin:/var/lib/pgadmin
-#    ports:
-#      - '5050:80'
-#    depends_on:
-#      - postgres
-#    restart: unless-stopped
+ pgadmin:
+   image: dpage/pgadmin4
+   container_name: Database-PGAdmin
+   env_file:
+     - ./env/pgadmin.env
+   volumes:
+     - pgadmin:/var/lib/pgadmin
+   ports:
+     - '5050:80'
+   depends_on:
+     - postgres
+   restart: unless-stopped
 
   api:
     build:
