@@ -4,7 +4,6 @@ import (
 	"API/Communication/DataSignatures"
 	"API/Database"
 	"log"
-	"time"
 )
 
 type MessageQuery struct {
@@ -52,7 +51,7 @@ func (messageQuery *MessageQuery) GetMessagesByTicketID(id uint64) ([]DataSignat
 
 // -------------------------------- POST ----------------------------------
 
-func (messageQuery *MessageQuery) PostMessageUsingTicketID(ticketID uint64, messageText string) error {
+func (messageQuery *MessageQuery) PostMessageUsingTicketID(ticketID uint64, message *DataSignatures.Message) error {
 	db := messageQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO message (ticket_id, message_text, message_date)
@@ -63,7 +62,7 @@ func (messageQuery *MessageQuery) PostMessageUsingTicketID(ticketID uint64, mess
 
 	defer query.Close()
 
-	_, err = query.Exec(ticketID, messageText, time.Now())
+	_, err = query.Exec(ticketID, message.MessageText, message.MessageDate)
 
 	if err != nil {
 		return err

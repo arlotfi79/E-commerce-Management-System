@@ -4,7 +4,6 @@ import (
 	"API/Communication/DataSignatures"
 	"API/Database"
 	"log"
-	"time"
 )
 
 type TicketQuery struct {
@@ -52,7 +51,7 @@ func (ticketQuery *TicketQuery) GetTicketsByOrderID(id uint64) ([]DataSignatures
 
 // -------------------------------- POST ----------------------------------
 
-func (ticketQuery *TicketQuery) PostTicketUsingOrderID(orderID uint64, subject string) error {
+func (ticketQuery *TicketQuery) PostTicketUsingOrderID(orderID uint64, ticket *DataSignatures.Ticket) error {
 	db := ticketQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO tickettracking (order_id, subject, ticket_date)
@@ -63,7 +62,7 @@ func (ticketQuery *TicketQuery) PostTicketUsingOrderID(orderID uint64, subject s
 
 	defer query.Close()
 
-	_, err = query.Exec(orderID, subject, time.Now())
+	_, err = query.Exec(orderID, ticket.Subject, ticket.TicketDate)
 
 	if err != nil {
 		return err

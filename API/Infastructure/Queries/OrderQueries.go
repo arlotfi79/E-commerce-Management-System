@@ -21,7 +21,7 @@ func (orderQuery *OrderQuery) GetOrdersByAccountID(id string) ([]DataSignatures.
 
 	query, err := db.Prepare(`SELECT order_id, description, delivery_method, order_date, address
 									FROM orderitem 
-									WHERE national_code = $1`)
+									WHERE account_id = $1`)
 
 	if err != nil {
 		log.Fatal(err)

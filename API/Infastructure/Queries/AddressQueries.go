@@ -21,7 +21,7 @@ func (addressQuery *AddressQuery) GetAddressesByAccountID(id string) ([]DataSign
 
 	query, err := db.Prepare(`SELECT address_id, country, city, street, plaque
     								FROM address
-    								WHERE national_code = $1`)
+    								WHERE account_id = $1`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -53,10 +53,10 @@ func (addressQuery *AddressQuery) GetAddressesByAccountID(id string) ([]DataSign
 
 // -------------------------------- POST ----------------------------------
 
-func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID, country, city, street, plaque string) error {
+func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID, address *DataSignatures.Address) error {
 	db := addressQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`INSERT INTO address (address_id, country, city, street, plaque)
+	query, err := db.Prepare(`INSERT INTO address (account_id, country, city, street, plaque)
 									VALUES ($1, $2, $3, $4, $5)`)
 
 	if err != nil {
@@ -65,7 +65,7 @@ func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID, country, c
 
 	defer query.Close()
 
-	_, err = query.Exec(accountID, country, city, street, plaque)
+	_, err = query.Exec(accountID, address.Country, address.City, address.Street, address.Plaque)
 
 	if err != nil {
 		return err
