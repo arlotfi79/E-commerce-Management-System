@@ -1,8 +1,8 @@
 package Queries
 
 import (
-	"DBProject/API/Communication/DataSignatures"
-	"DBProject/API/Database"
+	"API/Communication/DataSignatures"
+	"API/Database"
 	"log"
 )
 
