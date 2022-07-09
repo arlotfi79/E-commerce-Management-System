@@ -14,12 +14,12 @@ func NewStoreQuery(dbClient *Database.Postgresql) *StoreQuery {
 	return &StoreQuery{dbClient: dbClient}
 }
 
-func (storeQuery *StoreQuery) GetStoreByName(name string) (DataSignatures.Store, error) {
+func (storeQuery *StoreQuery) GetStoreByID(id uint64) (DataSignatures.Store, error) {
 	db := storeQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`SELECT * " 
-									FROM store " 
-									WHERE name = $1`)
+	query, err := db.Prepare(`SELECT * 
+									FROM store 
+									WHERE store_id = $1`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -27,7 +27,7 @@ func (storeQuery *StoreQuery) GetStoreByName(name string) (DataSignatures.Store,
 
 	defer query.Close()
 
-	row := query.QueryRow(name)
+	row := query.QueryRow(id)
 
 	if err != nil {
 		log.Fatal(err)
