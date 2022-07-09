@@ -1,19 +1,28 @@
-# Start from the latest golang base image
-FROM golang:1.18
+
+FROM golang:1.18-alpine AS builder
 
 WORKDIR /app
 
-# Copy go mod and sum files
-COPY go.mod go.sum ./
-
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+# Copy (go.mod, go.sum) and install dependencies in /app
+COPY /API/go.mod /API/go.sum ./
 RUN go mod download
 
-# Copy the source from the current directory to the Working Directory inside the container
+# copy sourse code to /app
 COPY . .
 
-# This container exposes port 8080 to the outside world
+WORKDIR /app/API
+
+# Build app
+RUN go build -o main .
+
+# ---------- multi-stage --------------
+FROM alpine:3.16
+
+WORKDIR /app
+
+COPY --from=builder /app/API/main /app/API/main
+
 EXPOSE 8080
 
 # Run the binary program produced by `go install`
-CMD ["/app/main"]
+CMD ["/app/API/main"]
