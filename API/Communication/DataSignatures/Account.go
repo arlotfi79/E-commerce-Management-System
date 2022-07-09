@@ -12,7 +12,7 @@ type Account struct {
 	Password     string    `json:"password" binding:"required"`
 	PhoneNumber  string    `json:"phoneNumber" binding:"required"`
 	Email        string    `json:"email" binding:"required"`
-	Gender       bool      `json:"gender" binding:"required"`
+	Gender       string    `json:"gender" binding:"required"`
 	BirthDate    time.Time `json:"birthDate" binding:"required"`
 	JoinDate     time.Time `json:"JoinDate" binding:"required"`
 }
