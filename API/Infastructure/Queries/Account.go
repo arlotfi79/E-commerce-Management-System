@@ -17,10 +17,11 @@ func NewUserQuery(dbClient *Database.Postgresql) *UserQuery {
 func (UserQuery *UserQuery) CreateUser(account *DataSignatures.Account) error {
 	db := UserQuery.dbClient.GetDB()
 
-	query, err := db.Prepare("INSERT" +
-		"Account" +
-		"VALUES" +
-		"(?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
+	query, err := db.Prepare("INSERT " +
+		"INSERT " +
+		"Account " +
+		"VALUES " +
+		"($1, $2, $3, $4, $5, $6, $7, $8, $9, $10")
 
 	if err != nil {
 		log.Fatal(err)
@@ -28,7 +29,7 @@ func (UserQuery *UserQuery) CreateUser(account *DataSignatures.Account) error {
 
 	defer query.Close()
 
-	row, err := query.Query(account.NationalCode,
+	_, err = query.Exec(account.NationalCode,
 		account.Name,
 		account.LastName,
 		account.UserName,
