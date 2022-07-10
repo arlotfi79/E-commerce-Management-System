@@ -2,7 +2,7 @@ package main
 
 import (
 	"API/Database"
-	"API/middleware"
+	"API/Middleware"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 func main() {
 	var db Database.Postgresql
 	err := db.Init()
-	defer db.Close()
+	// defer db.Close()
 
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -23,7 +23,7 @@ func main() {
 
 	// router.POST("/login", userHandler.Login)
 	// router.POST("/logout", userHandler.Logout)
-	var signUpHandler = func() (c *gin.Context) {
+	var signUpHandler = func(c *gin.Context) {
 
 		return
 	}
