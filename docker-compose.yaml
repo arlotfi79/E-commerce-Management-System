@@ -36,7 +36,7 @@ services:
     env_file:
       - ./env/api.env
     ports:
-      - '8081:8080'
+      - '8082:8081'
     restart: on-failure
 
   redis_db:

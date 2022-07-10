@@ -22,7 +22,7 @@ WORKDIR /app
 
 COPY --from=builder /app/API/main /app/API/main
 
-EXPOSE 8080
+EXPOSE 8081
 
 # Run the binary program produced by `go install`
 CMD ["/app/API/main"]
