@@ -45,7 +45,7 @@ func main() {
 		
 	}
 	router.POST("/signup", signUpHandler)
-	err = router.Run("localhost:8081")
+	err = router.Run(":8081")
 	if err != nil {
 		return
 	}
