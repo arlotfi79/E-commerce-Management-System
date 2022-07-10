@@ -19,11 +19,13 @@ func NewReviewQuery(dbClient *Database.Postgresql) *ReviewQuery {
 func (reviewQuery *ReviewQuery) GetReviewsWithVotesByProductID(id uint64) ([]DataSignatures.ReviewWithVotes, error) {
 	db := reviewQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`SELECT r.review_id, r.rating, SUM(re.up_vote), SUM(re.down_vote)
-									FROM review AS r 
-									INNER JOIN reaction AS re ON r.review_id = re.review_id
-									WHERE r.product_id = $1
-									GROUP BY r.review_id, r.rating`)
+	query, err := db.Prepare(`SELECT r.review_id, r.rating,
+       										SUM(CASE WHEN re.up_vote THEN 1 ELSE 0 END) AS up_vote_count,
+       										SUM(CASE WHEN re.down_vote THEN 1 ELSE 0 END) AS down_vote_count
+       								FROM review AS r
+       								LEFT JOIN reaction AS re ON r.review_id = re.review_id
+       								WHERE r.product_id = $1
+       								GROUP BY r.review_id, r.rating`)
 
 	if err != nil {
 		log.Fatal(err)

@@ -19,10 +19,10 @@ func (reactionQuery *ReactionQuery) UpVoteReaction(reviewID uint64, accountID ui
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO reaction (review_id, account_id, up_vote)
-									VALUES ($1, $2, 1)
+									VALUES ($1, $2, TRUE)
 									ON CONFLICT (review_id, account_id)
 										DO
-											UPDATE SET up_vote = reaction.up_vote + 1`)
+        									UPDATE SET up_vote = TRUE`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -47,8 +47,8 @@ func (reactionQuery *ReactionQuery) RemoveUpVoteOfAnAccount(reviewID uint64, acc
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`UPDATE reaction
-									SET up_vote = reaction.up_vote - 1
-									WHERE up_vote > 0 AND review_id = $1 AND account_id = $2`)
+									SET up_vote = FALSE
+									WHERE review_id = $1 AND account_id = $2`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -72,11 +72,11 @@ func (reactionQuery *ReactionQuery) RemoveUpVoteOfAnAccount(reviewID uint64, acc
 func (reactionQuery *ReactionQuery) DownVoteReaction(reviewID uint64, accountID uint64) error {
 	db := reactionQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`INSERT INTO reaction (review_id, account_id, down_vote) 
-									VALUES ($1, $2, 1)
-									ON CONFLICT 
-									    DO 
-									        UPDATE SET down_vote = reaction.down_vote + 1`)
+	query, err := db.Prepare(`INSERT INTO reaction (review_id, account_id, down_vote)
+									VALUES ($1, $2, TRUE)
+									ON CONFLICT (review_id, account_id)
+										DO
+        									UPDATE SET down_vote = TRUE`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -97,8 +97,8 @@ func (reactionQuery *ReactionQuery) RemoveDownVoteOfAnAccount(reviewID uint64, a
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`UPDATE reaction
-									SET down_vote = reaction.down_vote - 1
-									WHERE down_vote > 0 AND review_id = $1 AND account_id = $2`)
+									SET down_vote = FALSE
+									WHERE review_id = $1 AND account_id = $2`)
 
 	if err != nil {
 		log.Fatal(err)

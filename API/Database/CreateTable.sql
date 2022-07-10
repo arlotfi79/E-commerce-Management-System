@@ -104,8 +104,8 @@ CREATE TABLE Reaction (
     PRIMARY KEY (account_id, review_id),
     FOREIGN KEY (account_id) REFERENCES Account,
     FOREIGN KEY (review_id) REFERENCES Review,
-    up_vote INT DEFAULT 0,
-    down_vote INT DEFAULT 0
+    up_vote BOOLEAN DEFAULT FALSE,
+    down_vote BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE WatchList(
