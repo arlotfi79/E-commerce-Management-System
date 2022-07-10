@@ -2,14 +2,15 @@
 
 CREATE TYPE GENDER AS ENUM('MALE', 'FEMALE', 'OTHER');
 
+-- Avoid signup for users with available email/username
 CREATE TABLE Account (
     account_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    user_name VARCHAR(100) NOT NULL,
+    user_name VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(100) NOT NULL,
     phone_number VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     gender GENDER NOT NULL,
     birth_date DATE NOT NULL,
     join_date TIMESTAMP NOT NULL
