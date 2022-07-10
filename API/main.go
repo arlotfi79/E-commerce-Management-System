@@ -1,9 +1,13 @@
 package main
 
 import (
+	"API/Communication/DataSignatures"
 	"API/Database"
+	q "API/Infrastructure/Queries"
+
 	middleware "API/Middleware"
 	"log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,8 +28,25 @@ func main() {
 	// router.POST("/login", userHandler.Login)
 	// router.POST("/logout", userHandler.Logout)
 	var signUpHandler = func(c *gin.Context) {
-
-		return
+		log.Println("New Request recevied")
+		var acc DataSignatures.Account
+		if err := c.ShouldBindJSON(&acc); err != nil {
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
+				"invalid_json": "invalid json",
+			})
+			return
+		}
+		userq := q.NewUserQuery(&db)
+		err := userq.CreateUser(&acc)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+		
 	}
 	router.POST("/signup", signUpHandler)
+	err = router.Run("localhost:8081")
+	if err != nil {
+		return
+	}
 }

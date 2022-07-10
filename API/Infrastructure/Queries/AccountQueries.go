@@ -22,6 +22,7 @@ func (UserQuery *UserQuery) CreateUser(account *DataSignatures.Account) error {
 
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	defer query.Close()
@@ -40,6 +41,7 @@ func (UserQuery *UserQuery) CreateUser(account *DataSignatures.Account) error {
 
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
 
 	return nil
