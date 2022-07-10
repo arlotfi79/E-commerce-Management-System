@@ -1,7 +1,6 @@
 package Queries
 
 import (
-	"API/Communication/DataSignatures"
 	"API/Database"
 	"log"
 )
@@ -16,7 +15,7 @@ func NewReactionQuery(dbClient *Database.Postgresql) *ReactionQuery {
 
 // -------------------------------- POST ----------------------------------
 
-func (reactionQuery *ReactionQuery) UpVoteReaction(reaction *DataSignatures.VoteReaction) error {
+func (reactionQuery *ReactionQuery) UpVoteReaction(reviewID uint64, accountID uint64) error {
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO reaction (review_id, account_id, up_vote)
@@ -35,7 +34,7 @@ func (reactionQuery *ReactionQuery) UpVoteReaction(reaction *DataSignatures.Vote
 		log.Fatal(err)
 	}
 
-	_, err = query.Exec(reaction.ReviewID, reaction.AccountID)
+	_, err = query.Exec(reviewID, accountID)
 
 	if err != nil {
 		return err
@@ -44,7 +43,7 @@ func (reactionQuery *ReactionQuery) UpVoteReaction(reaction *DataSignatures.Vote
 	return nil
 }
 
-func (reactionQuery *ReactionQuery) RemoveUpVoteOfAnAccount(reaction *DataSignatures.VoteReaction) error {
+func (reactionQuery *ReactionQuery) RemoveUpVoteOfAnAccount(reviewID uint64, accountID uint64) error {
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`UPDATE reaction
@@ -61,7 +60,7 @@ func (reactionQuery *ReactionQuery) RemoveUpVoteOfAnAccount(reaction *DataSignat
 		log.Fatal(err)
 	}
 
-	_, err = query.Exec(reaction.ReviewID, reaction.AccountID)
+	_, err = query.Exec(reviewID, accountID)
 
 	if err != nil {
 		return err
@@ -70,7 +69,7 @@ func (reactionQuery *ReactionQuery) RemoveUpVoteOfAnAccount(reaction *DataSignat
 	return nil
 }
 
-func (reactionQuery *ReactionQuery) DownVoteReaction(reaction *DataSignatures.VoteReaction) error {
+func (reactionQuery *ReactionQuery) DownVoteReaction(reviewID uint64, accountID uint64) error {
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO reaction (review_id, account_id, down_vote) 
@@ -85,7 +84,7 @@ func (reactionQuery *ReactionQuery) DownVoteReaction(reaction *DataSignatures.Vo
 
 	defer query.Close()
 
-	_, err = query.Exec(reaction.ReviewID, reaction.AccountID)
+	_, err = query.Exec(reviewID, accountID)
 
 	if err != nil {
 		return err
@@ -94,7 +93,7 @@ func (reactionQuery *ReactionQuery) DownVoteReaction(reaction *DataSignatures.Vo
 	return nil
 }
 
-func (reactionQuery *ReactionQuery) RemoveDownVoteOfAnAccount(reaction *DataSignatures.VoteReaction) error {
+func (reactionQuery *ReactionQuery) RemoveDownVoteOfAnAccount(reviewID uint64, accountID uint64) error {
 	db := reactionQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`UPDATE reaction
@@ -111,7 +110,7 @@ func (reactionQuery *ReactionQuery) RemoveDownVoteOfAnAccount(reaction *DataSign
 		log.Fatal(err)
 	}
 
-	_, err = query.Exec(reaction.ReviewID, reaction.AccountID)
+	_, err = query.Exec(reviewID, accountID)
 
 	if err != nil {
 		return err
