@@ -7,3 +7,9 @@ type Ticket struct {
 	Subject    string    `json:"subject"`
 	TicketDate time.Time `json:"ticket_date"`
 }
+
+type PostTicket struct {
+	OrderID    uint64    `json:"order_id"`
+	Subject    string    `json:"subject"`
+	TicketDate time.Time `json:"ticket_date"`
+}

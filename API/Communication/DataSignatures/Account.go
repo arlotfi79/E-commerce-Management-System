@@ -4,8 +4,7 @@ import (
 	"time"
 )
 
-type Account struct {
-	Id          uint64    `json:"id" binding:"required"`
+type PostAccount struct {
 	Name        string    `json:"name" binding:"required"`
 	LastName    string    `json:"lastName" binding:"required"`
 	UserName    string    `json:"username" binding:"required"`
@@ -15,4 +14,9 @@ type Account struct {
 	Gender      string    `json:"gender" binding:"required"`
 	BirthDate   time.Time `json:"birthDate" binding:"required"`
 	JoinDate    time.Time `json:"JoinDate" binding:"required"`
+}
+
+type GetAccount struct {
+	Id uint64 `json:"id" binding:"required"`
+	PostAccount
 }
