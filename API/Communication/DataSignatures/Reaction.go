@@ -9,5 +9,4 @@ type Reaction struct {
 type VoteReaction struct {
 	ReviewID  uint64 `json:"review_id"`
 	AccountID uint64 `json:"account_id"`
-	Vote      uint64 `json:"vote"`
 }
