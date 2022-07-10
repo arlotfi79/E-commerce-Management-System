@@ -14,6 +14,8 @@ func NewReviewQuery(dbClient *Database.Postgresql) *ReviewQuery {
 	return &ReviewQuery{dbClient: dbClient}
 }
 
+// -------------------------------- GET ----------------------------------
+
 func (reviewQuery *ReviewQuery) GetReviewsWithVotesByProductID(id uint64) ([]DataSignatures.ReviewWithVotes, error) {
 	db := reviewQuery.dbClient.GetDB()
 
@@ -48,4 +50,26 @@ func (reviewQuery *ReviewQuery) GetReviewsWithVotesByProductID(id uint64) ([]Dat
 	}
 
 	return reviews, err
+}
+
+// -------------------------------- POST ----------------------------------
+
+func (reviewQuery *ReviewQuery) PostReviewUsingProductID(review *DataSignatures.PostReview) error {
+	db := reviewQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`INSERT INTO review (product_id, account_id, rating)
+									VALUES ($1, $2, $3)`)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	_, err = query.Exec(review.ProductID, review.AccountID, review.Rating)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
