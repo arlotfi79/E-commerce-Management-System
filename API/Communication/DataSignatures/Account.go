@@ -5,7 +5,7 @@ import (
 )
 
 type Account struct {
-	Id          string    `json:"id" binding:"required"`
+	Id          uint64    `json:"id" binding:"required"`
 	Name        string    `json:"name" binding:"required"`
 	LastName    string    `json:"lastName" binding:"required"`
 	UserName    string    `json:"username" binding:"required"`
