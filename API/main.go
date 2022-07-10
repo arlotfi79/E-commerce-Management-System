@@ -2,7 +2,7 @@ package main
 
 import (
 	"API/Database"
-	"API/Middleware"
+	middleware "API/Middleware"
 	"log"
 
 	"github.com/gin-gonic/gin"
