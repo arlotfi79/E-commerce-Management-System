@@ -3,6 +3,8 @@ package Queries
 import (
 	"API/Communication/DataSignatures"
 	"API/Database"
+	pwd "API/Infrastructure/PasswordSecurity"
+
 	"log"
 )
 
@@ -27,12 +29,15 @@ func (UserQuery *UserQuery) CreateUser(account *DataSignatures.PostAccount) erro
 
 	defer query.Close()
 
+	hashedPass, _ := pwd.Encrypt(account.Password)
+	log.Print(hashedPass)
+	// acc.Password = hashedPass
 	_, err = query.Exec(
 		account.Name,
 		account.LastName,
 		account.UserName,
 		account.PhoneNumber,
-		account.Password,
+		hashedPass,
 		account.Email,
 		account.Gender,
 		account.BirthDate,
@@ -68,7 +73,7 @@ func (UserQuery *UserQuery) GetUserByUname(username string) ([]DataSignatures.Ge
 	for rows.Next() {
 		var account DataSignatures.GetAccount
 
-		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.PhoneNumber, &account.Password, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
+		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.Password, &account.PhoneNumber, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
 
 		if err != nil {
 			log.Fatalln(err)
@@ -100,7 +105,7 @@ func (UserQuery *UserQuery) GetUserByEmail(email string) ([]DataSignatures.GetAc
 	for rows.Next() {
 		var account DataSignatures.GetAccount
 
-		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.PhoneNumber, &account.Password, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
+		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.Password, &account.PhoneNumber, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
 
 		if err != nil {
 			log.Fatalln(err)
@@ -131,7 +136,8 @@ func (UserQuery *UserQuery) GetUserByPhoneNumber(phoneNumber string) ([]DataSign
 	for rows.Next() {
 		var account DataSignatures.GetAccount
 
-		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.PhoneNumber, &account.Password, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
+		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.Password, &account.PhoneNumber, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
+
 
 		if err != nil {
 			log.Fatalln(err)
