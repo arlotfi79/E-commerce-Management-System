@@ -47,7 +47,7 @@ func (UserQuery *UserQuery) CreateUser(account *DataSignatures.PostAccount) erro
 	return nil
 }
 
-func (UserQuery *UserQuery) GetUserByUname(username string) ([]DataSignatures.Account, error) {
+func (UserQuery *UserQuery) GetUserByUname(username string) ([]DataSignatures.GetAccount, error) {
 	db := UserQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT * FROM Account WHERE user_name=$1`)
@@ -59,14 +59,14 @@ func (UserQuery *UserQuery) GetUserByUname(username string) ([]DataSignatures.Ac
 
 	defer query.Close()
 	rows, err := query.Query(username)
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
 		return nil, err
 
 	}
-	var accounts []DataSignatures.Account
+	var accounts []DataSignatures.GetAccount
 	for rows.Next() {
-		var account DataSignatures.Account
+		var account DataSignatures.GetAccount
 
 		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.PhoneNumber, &account.Password, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
 
@@ -79,7 +79,7 @@ func (UserQuery *UserQuery) GetUserByUname(username string) ([]DataSignatures.Ac
 	return accounts, err
 }
 
-func (UserQuery *UserQuery) GetUserByEmail(email string) ([]DataSignatures.Account, error) {
+func (UserQuery *UserQuery) GetUserByEmail(email string) ([]DataSignatures.GetAccount, error) {
 	db := UserQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT * FROM Account WHERE email=$1`)
@@ -91,14 +91,14 @@ func (UserQuery *UserQuery) GetUserByEmail(email string) ([]DataSignatures.Accou
 
 	defer query.Close()
 	rows, err := query.Query(email)
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
 		return nil, err
 
 	}
-	var accounts []DataSignatures.Account
+	var accounts []DataSignatures.GetAccount
 	for rows.Next() {
-		var account DataSignatures.Account
+		var account DataSignatures.GetAccount
 
 		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.PhoneNumber, &account.Password, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
 
@@ -111,25 +111,25 @@ func (UserQuery *UserQuery) GetUserByEmail(email string) ([]DataSignatures.Accou
 	return accounts, err
 }
 
-func (UserQuery *UserQuery) GetUserByPhoneNumber(phoneNumber string) ([]DataSignatures.Account, error) {
+func (UserQuery *UserQuery) GetUserByPhoneNumber(phoneNumber string) ([]DataSignatures.GetAccount, error) {
 	db := UserQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT * FROM Account WHERE phone_number=$1`)
 
 	if err != nil {
 		log.Fatalln(err)
-		return nil,err
+		return nil, err
 	}
 
 	defer query.Close()
 	rows, err := query.Query(phoneNumber)
-	if err != nil{
+	if err != nil {
 		log.Fatalln(err)
 		return nil, err
 	}
-	var accounts []DataSignatures.Account
+	var accounts []DataSignatures.GetAccount
 	for rows.Next() {
-		var account DataSignatures.Account
+		var account DataSignatures.GetAccount
 
 		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.PhoneNumber, &account.Password, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
 

@@ -3,8 +3,8 @@ package Handlers
 import (
 	"API/Communication/DataSignatures"
 	"API/Database"
-	q "API/Infrastructure/Queries"
 	pwd "API/Infrastructure/PasswordSecurity"
+	q "API/Infrastructure/Queries"
 	"log"
 	"net/http"
 
@@ -19,9 +19,9 @@ func (accountHandler *AccountHandler) NewAccountHandler(dbClient *Database.Postg
 	return &AccountHandler{dbClient: dbClient}
 }
 
-func (accountHandler *AccountHandler) SignUpHandler (c *gin.Context) {
+func (accountHandler *AccountHandler) SignUpHandler(c *gin.Context) {
 	log.Println("New Request recevied")
-	var acc DataSignatures.Account
+	var acc DataSignatures.PostAccount
 	if err := c.ShouldBindJSON(&acc); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
 			"err": "invalid json",
@@ -63,5 +63,5 @@ func (accountHandler *AccountHandler) SignUpHandler (c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	
+
 }
