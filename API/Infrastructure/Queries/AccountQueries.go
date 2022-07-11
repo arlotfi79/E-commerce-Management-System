@@ -14,7 +14,7 @@ func NewUserQuery(dbClient *Database.Postgresql) *UserQuery {
 	return &UserQuery{dbClient: dbClient}
 }
 
-func (UserQuery *UserQuery) CreateUser(account *DataSignatures.Account) error {
+func (UserQuery *UserQuery) CreateUser(account *DataSignatures.PostAccount) error {
 	db := UserQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO Account (name, last_name, user_name, phone_number, password, email, gender, birth_date, join_date)

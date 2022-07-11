@@ -7,3 +7,9 @@ type Message struct {
 	MessageText string    `json:"message_text"`
 	MessageDate time.Time `json:"message_date"`
 }
+
+type PostMessage struct {
+	TicketID    uint64    `json:"ticket_id"`
+	MessageText string    `json:"message_text"`
+	MessageDate time.Time `json:"message_date"`
+}

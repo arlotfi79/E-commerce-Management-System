@@ -51,7 +51,7 @@ func (messageQuery *MessageQuery) GetMessagesByTicketID(id uint64) ([]DataSignat
 
 // -------------------------------- POST ----------------------------------
 
-func (messageQuery *MessageQuery) PostMessageUsingTicketID(ticketID uint64, message *DataSignatures.Message) error {
+func (messageQuery *MessageQuery) PostMessageUsingTicketID(message *DataSignatures.PostMessage) error {
 	db := messageQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO message (ticket_id, message_text, message_date)
@@ -62,7 +62,7 @@ func (messageQuery *MessageQuery) PostMessageUsingTicketID(ticketID uint64, mess
 
 	defer query.Close()
 
-	_, err = query.Exec(ticketID, message.MessageText, message.MessageDate)
+	_, err = query.Exec(message.TicketID, message.MessageText, message.MessageDate)
 
 	if err != nil {
 		return err

@@ -14,6 +14,8 @@ func NewProductQuery(dbClient *Database.Postgresql) *ProductQuery {
 	return &ProductQuery{dbClient: dbClient}
 }
 
+// -------------------------------- GET ----------------------------------
+
 func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.Product, error) {
 	db := productQuery.dbClient.GetDB()
 
@@ -176,3 +178,40 @@ func (productQuery *ProductQuery) GetProductsByOrderID(id uint64) ([]DataSignatu
 
 	return products, nil
 }
+
+func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, productID uint64) ([]DataSignatures.Product, error) {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity
+									FROM Product AS p
+									INNER JOIN WatchList AS w ON p.product_id = w.product_id
+									WHERE w.account_id = $1 AND w.product_id = $2`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	row, err := query.Query(accountID, productID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var products []DataSignatures.Product
+	for row.Next() {
+		var product DataSignatures.Product
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
+// -------------------------------- POST ----------------------------------

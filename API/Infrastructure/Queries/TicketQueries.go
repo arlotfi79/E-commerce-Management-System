@@ -51,7 +51,7 @@ func (ticketQuery *TicketQuery) GetTicketsByOrderID(id uint64) ([]DataSignatures
 
 // -------------------------------- POST ----------------------------------
 
-func (ticketQuery *TicketQuery) PostTicketUsingOrderID(orderID uint64, ticket *DataSignatures.Ticket) error {
+func (ticketQuery *TicketQuery) PostTicketUsingOrderID(ticket *DataSignatures.PostTicket) error {
 	db := ticketQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO tickettracking (order_id, subject, ticket_date)
@@ -62,7 +62,7 @@ func (ticketQuery *TicketQuery) PostTicketUsingOrderID(orderID uint64, ticket *D
 
 	defer query.Close()
 
-	_, err = query.Exec(orderID, ticket.Subject, ticket.TicketDate)
+	_, err = query.Exec(ticket.OrderID, ticket.Subject, ticket.TicketDate)
 
 	if err != nil {
 		return err
