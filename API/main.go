@@ -26,9 +26,6 @@ func main() {
 	router.Use(gin.Recovery())
 	router.Use(middleware.CORSMiddleware())
 
-	// router.POST("/login", userHandler.Login)
-	// router.POST("/logout", userHandler.Logout)
-
 	var handlerObj Handlers.AccountHandler
 
 	accountHandler := handlerObj.NewAccountHandler(&db)
