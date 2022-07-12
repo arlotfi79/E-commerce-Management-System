@@ -16,7 +16,7 @@ func NewOrderQuery(dbClient *Database.Postgresql) *OrderQuery {
 
 // -------------------------------- GET ----------------------------------
 
-func (orderQuery *OrderQuery) GetOrdersByAccountID(id uint64) ([]DataSignatures.Order, error) {
+func (orderQuery *OrderQuery) GetOrdersByAccountID(id uint64) ([]DataSignatures.GetOrder, error) {
 	db := orderQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT order_id, description, delivery_method, order_date, address
@@ -35,9 +35,9 @@ func (orderQuery *OrderQuery) GetOrdersByAccountID(id uint64) ([]DataSignatures.
 		log.Fatal(err)
 	}
 
-	var orders []DataSignatures.Order
+	var orders []DataSignatures.GetOrder
 	for row.Next() {
-		var order DataSignatures.Order
+		var order DataSignatures.GetOrder
 
 		err = row.Scan(&order.Id, &order.Description, &order.DeliveryMethod, &order.OrderDate, &order.Address)
 
@@ -52,3 +52,23 @@ func (orderQuery *OrderQuery) GetOrdersByAccountID(id uint64) ([]DataSignatures.
 }
 
 // -------------------------------- POST ----------------------------------
+
+func (orderQuery *OrderQuery) CreateOrder(order DataSignatures.PostOrder) error {
+	db := orderQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`CALL CreateOrderAndClearCart($1, $2, $3, $4, $5)`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	_, err = query.Exec(order.AccountID, order.Description, order.Address, order.DeliveryMethod, order.OrderDate)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nil
+}
