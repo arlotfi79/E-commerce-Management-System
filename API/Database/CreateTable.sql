@@ -116,7 +116,17 @@ CREATE TABLE WatchList(
     FOREIGN KEY (product_id) REFERENCES Product
 );
 
-CREATE TABLE Order_Product_Counter(
+CREATE TABLE Cart(
+    account_id INT,
+    product_id INT,
+    PRIMARY KEY (account_id, product_id),
+    FOREIGN KEY (account_id) REFERENCES Account,
+    FOREIGN KEY (product_id) REFERENCES Product,
+    product_count INT NOT NULL,
+    is_sold BOOLEAN DEFAULT FALSE
+);
+
+CREATE TABLE Order_Product(
     order_id INT,
     product_id INT,
     PRIMARY KEY (product_id, order_id),
@@ -140,3 +150,59 @@ CREATE TABLE Product_Store(
     FOREIGN KEY (product_id) REFERENCES Product,
     FOREIGN KEY (store_id) REFERENCES Store
 );
+
+-------------------------------------------------------------------------------------
+-- Procedures
+
+CREATE PROCEDURE CreateOrderAndClearCart(
+    AccountID INTEGER,
+    OrderDescription TEXT,
+    OrderAddress VARCHAR(100),
+    DeliveryMethod DELIVERY,
+    OrderDate TIMESTAMP
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Mark products as Sold if the store has enough of them
+    UPDATE Cart AS c
+    SET is_sold = TRUE
+    FROM Product AS p
+    WHERE p.quantity >= c.product_count AND c.account_id = AccountID AND p.product_id = c.product_id;
+
+    -- Decrease Product's Quantity based on WantedQuantity in the Cart
+    UPDATE Product AS p
+    SET quantity = p.quantity - c.product_count
+    FROM Cart AS c
+    WHERE c.account_id = AccountID AND c.is_sold = TRUE AND p.product_id = c.product_id;
+
+    -- Now CreateOrder and insert the Cart's Products with is_sold = TRUE to the created order
+    WITH OrderID AS (
+        INSERT INTO orderitem (account_id, description, address, delivery_method, order_date)
+        VALUES (AccountID, OrderDescription, OrderAddress, DeliveryMethod, OrderDate)
+        RETURNING order_id
+    )
+    INSERT INTO order_product (order_id, product_id, product_count)
+    SELECT order_id, product_id, product_count
+    FROM (
+         SELECT *
+         FROM cart
+         CROSS JOIN OrderID
+         WHERE account_id = AccountID AND is_sold = TRUE
+    ) AS cartList;
+
+    -- Delete all products with is_sold = TRUE
+    DELETE FROM Cart
+    WHERE account_id = AccountID AND is_sold = TRUE;
+
+    -- If any product is left in the cart THEN raise an exception
+    IF EXISTS (
+            SELECT *
+            FROM cart
+            WHERE account_id = AccountID AND is_sold = FALSE
+        )
+        THEN
+            RAISE EXCEPTION 'There is a product in your cart which is not available in the store';
+    END IF;
+END;
+$$;
