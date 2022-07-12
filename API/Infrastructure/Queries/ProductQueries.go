@@ -16,7 +16,7 @@ func NewProductQuery(dbClient *Database.Postgresql) *ProductQuery {
 
 // -------------------------------- GET ----------------------------------
 
-func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.Product, error) {
+func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT * 
@@ -35,7 +35,7 @@ func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.Prod
 		log.Fatal(err)
 	}
 
-	var product DataSignatures.Product
+	var product DataSignatures.GetProduct
 	err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
 	if err != nil {
@@ -45,7 +45,7 @@ func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.Prod
 	return product, nil
 }
 
-func (productQuery *ProductQuery) GetProductByName(name string) (DataSignatures.Product, error) {
+func (productQuery *ProductQuery) GetProductByName(name string) (DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT * 
@@ -64,7 +64,7 @@ func (productQuery *ProductQuery) GetProductByName(name string) (DataSignatures.
 		log.Fatal(err)
 	}
 
-	var product DataSignatures.Product
+	var product DataSignatures.GetProduct
 	err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
 	if err != nil {
@@ -74,7 +74,7 @@ func (productQuery *ProductQuery) GetProductByName(name string) (DataSignatures.
 	return product, nil
 }
 
-func (productQuery *ProductQuery) GetProductsByCategoryName(name string) ([]DataSignatures.Product, error) {
+func (productQuery *ProductQuery) GetProductsByCategoryName(name string) ([]DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity  
@@ -95,9 +95,9 @@ func (productQuery *ProductQuery) GetProductsByCategoryName(name string) ([]Data
 		log.Fatal(err)
 	}
 
-	var products []DataSignatures.Product
+	var products []DataSignatures.GetProduct
 	for row.Next() {
-		var product DataSignatures.Product
+		var product DataSignatures.GetProduct
 		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
 		if err != nil {
@@ -110,7 +110,7 @@ func (productQuery *ProductQuery) GetProductsByCategoryName(name string) ([]Data
 	return products, nil
 }
 
-func (productQuery *ProductQuery) GetProductsByStoreID(id uint64) ([]DataSignatures.Product, error) {
+func (productQuery *ProductQuery) GetProductsByStoreID(id uint64) ([]DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity
@@ -130,9 +130,9 @@ func (productQuery *ProductQuery) GetProductsByStoreID(id uint64) ([]DataSignatu
 		log.Fatal(err)
 	}
 
-	var products []DataSignatures.Product
+	var products []DataSignatures.GetProduct
 	for row.Next() {
-		var product DataSignatures.Product
+		var product DataSignatures.GetProduct
 		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
 		if err != nil {
@@ -145,11 +145,11 @@ func (productQuery *ProductQuery) GetProductsByStoreID(id uint64) ([]DataSignatu
 	return products, nil
 }
 
-func (productQuery *ProductQuery) GetProductsByOrderID(id uint64) ([]DataSignatures.Product, error) {
+func (productQuery *ProductQuery) GetProductsByOrderID(id uint64) ([]DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity
 									FROM product AS p
-									INNER JOIN order_product_counter AS op ON p.product_id = op.product_id
+									INNER JOIN order_product AS op ON p.product_id = op.product_id
 									WHERE op.order_id = $1`)
 
 	if err != nil {
@@ -164,9 +164,9 @@ func (productQuery *ProductQuery) GetProductsByOrderID(id uint64) ([]DataSignatu
 		log.Fatal(err)
 	}
 
-	var products []DataSignatures.Product
+	var products []DataSignatures.GetProduct
 	for row.Next() {
-		var product DataSignatures.Product
+		var product DataSignatures.GetProduct
 		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
 		if err != nil {
@@ -179,7 +179,7 @@ func (productQuery *ProductQuery) GetProductsByOrderID(id uint64) ([]DataSignatu
 	return products, nil
 }
 
-func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, productID uint64) ([]DataSignatures.Product, error) {
+func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, productID uint64) ([]DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity
@@ -199,9 +199,9 @@ func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, produ
 		log.Fatal(err)
 	}
 
-	var products []DataSignatures.Product
+	var products []DataSignatures.GetProduct
 	for row.Next() {
-		var product DataSignatures.Product
+		var product DataSignatures.GetProduct
 		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
 		if err != nil {
@@ -214,4 +214,69 @@ func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, produ
 	return products, nil
 }
 
+func (productQuery *ProductQuery) GetProductsOfCartList(accountID uint64, productID uint64) ([]DataSignatures.GetProductFromCart, error) {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity, c.product_count
+									FROM Product AS p
+									INNER JOIN Cart AS c ON p.product_id = c.product_id
+									WHERE c.account_id = $1 AND c.product_id = $2`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	row, err := query.Query(accountID, productID)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var products []DataSignatures.GetProductFromCart
+	for row.Next() {
+		var product DataSignatures.GetProductFromCart
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price,
+			&product.Weight, &product.Quantity, &product.RequestedQuantity)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
 // -------------------------------- POST ----------------------------------
+
+func (productQuery *ProductQuery) AddProductToOrder(orderID uint64, productID uint64, productCount uint64) error {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`INSERT INTO order_product (order_id, product_id, product_count)
+									SELECT *
+										FROM (
+											VALUES ($1, $2, $3)
+											 ) AS input
+									WHERE (
+										SELECT quantity
+										FROM product
+										WHERE product_id = $2
+											  ) >= $3;`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	_, err = query.Exec(orderID, productID, productCount)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
