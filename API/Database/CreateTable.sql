@@ -28,8 +28,8 @@ CREATE TABLE Address(
 CREATE TABLE Notification (
     notification_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Account, -- FK
-    subject VARCHAR(100) NOT NULL,
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    notify_time TIMESTAMP NOT NULL
 );
 
 -------------------------------------------------------------------------------------
@@ -46,8 +46,7 @@ CREATE TABLE OrderItem(
 
 CREATE TABLE PromotionCode(
     promotion_code_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES OrderItem, -- FK
-    value FLOAT CHECK ( value > 0 ) NOT NULL,
+    value NUMERIC CHECK ( value > 0 ) NOT NULL,
     expire_date TIMESTAMP NOT NULL
 );
 
@@ -72,8 +71,8 @@ CREATE TABLE Product(
     product_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     color COLOR,
-    price FLOAT CHECK ( price > 0 ) NOT NULL,
-    weight FLOAT CHECK ( weight > 0 ) NOT NULL,
+    price NUMERIC CHECK ( price > 0 ) NOT NULL,
+    weight NUMERIC CHECK ( weight > 0 ) NOT NULL,
     Quantity INT NOT NULL
 );
 
@@ -203,6 +202,35 @@ BEGIN
         )
         THEN
             RAISE EXCEPTION 'There is a product in your cart which is not available in the store';
+    END IF;
+END;
+$$;
+
+CREATE PROCEDURE RefreshNotificationsAndClearAvailableWatchListProducts(
+    AccountID INTEGER
+)
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF EXISTS (
+        SELECT *
+        FROM WatchList AS wl
+        INNER JOIN Product AS p ON wl.product_id = p.product_id
+        WHERE p.quantity > 0 AND wl.account_id = AccountID
+        )
+        THEN
+            INSERT INTO Notification (account_id, description, notify_time)
+            SELECT AccountID, CONCAT('Product "', name ,'" with ID = ', product_id, ' is now available'), now()
+            FROM (
+                SELECT p.name, wl.product_id
+                FROM WatchList AS wl
+                INNER JOIN Product AS p ON wl.product_id = p.product_id
+                WHERE p.quantity > 0 AND wl.account_id = AccountID
+                 ) AS WatchListWithProduct;
+
+            DELETE FROM WatchList AS wl
+                USING Product AS p
+            WHERE p.quantity > 0 AND wl.account_id = AccountID;
     END IF;
 END;
 $$;

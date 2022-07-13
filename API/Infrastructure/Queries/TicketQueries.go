@@ -19,9 +19,11 @@ func NewTicketQuery(dbClient *Database.Postgresql) *TicketQuery {
 func (ticketQuery *TicketQuery) GetTicketsByOrderID(id uint64) ([]DataSignatures.Ticket, error) {
 	db := ticketQuery.dbClient.GetDB()
 
+	// newer tickets will be listed first
 	query, err := db.Prepare(`SELECT ticket_id, subject, ticket_date
-									FROM tickettracking
-									WHERE order_id = $1`)
+									FROM TicketTracking
+									WHERE order_id = $1
+									ORDER BY ticket_date DESC`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -44,6 +46,8 @@ func (ticketQuery *TicketQuery) GetTicketsByOrderID(id uint64) ([]DataSignatures
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		tickets = append(tickets, ticket)
 	}
 
 	return tickets, nil
@@ -54,7 +58,7 @@ func (ticketQuery *TicketQuery) GetTicketsByOrderID(id uint64) ([]DataSignatures
 func (ticketQuery *TicketQuery) PostTicketUsingOrderID(ticket *DataSignatures.PostTicket) error {
 	db := ticketQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`INSERT INTO tickettracking (order_id, subject, ticket_date)
+	query, err := db.Prepare(`INSERT INTO TicketTracking (order_id, subject, ticket_date)
 									VALUES ($1, $2, $3)`)
 	if err != nil {
 		log.Fatal(err)

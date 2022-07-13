@@ -19,9 +19,11 @@ func NewMessageQuery(dbClient *Database.Postgresql) *MessageQuery {
 func (messageQuery *MessageQuery) GetMessagesByTicketID(id uint64) ([]DataSignatures.Message, error) {
 	db := messageQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`SELECT message_id, message_text, message_date
-									FROM message
-									WHERE ticket_id = $1`)
+	// newer messages will be listed first
+	query, err := db.Prepare(`SELECT message_id, message_text, message_date 
+									FROM Message
+									WHERE ticket_id = $1
+									ORDER BY message_date DESC`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -44,6 +46,8 @@ func (messageQuery *MessageQuery) GetMessagesByTicketID(id uint64) ([]DataSignat
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		messages = append(messages, message)
 	}
 
 	return messages, nil
@@ -54,7 +58,7 @@ func (messageQuery *MessageQuery) GetMessagesByTicketID(id uint64) ([]DataSignat
 func (messageQuery *MessageQuery) PostMessageUsingTicketID(message *DataSignatures.PostMessage) error {
 	db := messageQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`INSERT INTO message (ticket_id, message_text, message_date)
+	query, err := db.Prepare(`INSERT INTO Message (ticket_id, message_text, message_date)
 									VALUES ($1, $2, $3)`)
 	if err != nil {
 		log.Fatal(err)
