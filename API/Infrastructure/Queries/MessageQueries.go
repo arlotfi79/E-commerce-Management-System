@@ -46,6 +46,8 @@ func (messageQuery *MessageQuery) GetMessagesByTicketID(id uint64) ([]DataSignat
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		messages = append(messages, message)
 	}
 
 	return messages, nil

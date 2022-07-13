@@ -46,6 +46,8 @@ func (ticketQuery *TicketQuery) GetTicketsByOrderID(id uint64) ([]DataSignatures
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		tickets = append(tickets, ticket)
 	}
 
 	return tickets, nil
