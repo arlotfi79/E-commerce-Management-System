@@ -28,7 +28,8 @@ CREATE TABLE Address(
 CREATE TABLE Notification (
     notification_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Account, -- FK
-    description TEXT NOT NULL
+    description TEXT NOT NULL,
+    notify_time TIMESTAMP NOT NULL
 );
 
 -------------------------------------------------------------------------------------
@@ -219,8 +220,8 @@ BEGIN
         WHERE p.quantity > 0 AND wl.account_id = AccountID
         )
         THEN
-            INSERT INTO Notification (account_id, description)
-            SELECT AccountID, CONCAT('Product "', name ,'" with ID = ', product_id, ' is now available')
+            INSERT INTO Notification (account_id, description, notify_time)
+            SELECT AccountID, CONCAT('Product "', name ,'" with ID = ', product_id, ' is now available'), now()
             FROM (
                 SELECT p.name, wl.product_id
                 FROM WatchList AS wl

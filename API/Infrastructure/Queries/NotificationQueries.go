@@ -19,7 +19,8 @@ func (notificationQuery *NotificationQuery) GetNotificationsByAccountID(accountI
 
 	query, err := db.Prepare(`SELECT *
 									FROM Notification
-									WHERE account_id = $1`)
+									WHERE account_id = $1
+									ORDER BY notify_time DESC`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -37,7 +38,7 @@ func (notificationQuery *NotificationQuery) GetNotificationsByAccountID(accountI
 	for row.Next() {
 		var notification DataSignatures.Notification
 
-		err = row.Scan()
+		err = row.Scan(&notification.Id, &notification.AccountID, &notification.Description, &notification.NotifyTime)
 
 		if err != nil {
 			log.Fatal(err)
