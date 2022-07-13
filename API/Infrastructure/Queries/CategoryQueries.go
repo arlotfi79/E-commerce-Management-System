@@ -14,7 +14,7 @@ func NewCategoryQuery(dbClient *Database.Postgresql) *CategoryQuery {
 	return &CategoryQuery{dbClient: dbClient}
 }
 
-func (categoryQuery *CategoryQuery) GetAllCategories(id uint64) ([]DataSignatures.Category, error) {
+func (categoryQuery *CategoryQuery) GetAllCategories() ([]DataSignatures.Category, error) {
 	db := categoryQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT category_id, name
@@ -26,7 +26,7 @@ func (categoryQuery *CategoryQuery) GetAllCategories(id uint64) ([]DataSignature
 
 	defer query.Close()
 
-	row, err := query.Query(id)
+	row, err := query.Query()
 
 	if err != nil {
 		log.Fatal(err)
