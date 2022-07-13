@@ -2,13 +2,13 @@ package PasswordSecurity
 
 import "golang.org/x/crypto/bcrypt"
 
-func Encrypt(password string) ([]byte, error) {
+func Encrypt(password string) (string, error) {
 
-	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+    return string(bytes), err
 }
 
-func Decrypt(hashedPassword string, password string) error {
-
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
-
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
