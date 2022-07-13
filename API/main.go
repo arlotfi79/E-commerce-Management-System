@@ -41,11 +41,22 @@ func main() {
 	router.Use(gin.Recovery())
 	router.Use(middleware.CORSMiddleware())
 
-	var handlerObj Handlers.AccountHandler
+	var accHandle Handlers.AccountHandler
+	var categHandle Handlers.CategoryHandler
+	var prodHandle Handlers.ProductHandler
 
-	accountHandler := handlerObj.NewAccountHandler(&db, redisService.Auth, tokenInt)
+
+
+	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
+	categHandler := categHandle.NewCategoryHandler(&db)
+	prodHandler := prodHandle.NewProductHandler(&db)
+
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
+	router.GET("/category", categHandler.GetAllCategoriesHandler)
+	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
+
+
 
 	err = router.Run(":8081")
 	if err != nil {
