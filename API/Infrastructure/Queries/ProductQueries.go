@@ -31,10 +31,6 @@ func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.GetP
 
 	row := query.QueryRow(id)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	var product DataSignatures.GetProduct
 	err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
 
@@ -59,10 +55,6 @@ func (productQuery *ProductQuery) GetProductByName(name string) (DataSignatures.
 	defer query.Close()
 
 	row := query.QueryRow(name)
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	var product DataSignatures.GetProduct
 	err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
@@ -214,22 +206,23 @@ func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, produ
 	return products, nil
 }
 
-func (productQuery *ProductQuery) GetProductsOfCartListWithTotalCostByAccountID(accountID uint64) ([]DataSignatures.GetProductFromCart, error) {
+func (productQuery *ProductQuery) GetProductsOfCartListWithTotalCostAndDeductedPromotionCodeByAccountID(accountID uint64,
+	promotionCodeValue float64) ([]DataSignatures.GetProductFromCart, error) {
 	db := productQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight AS product_wight, 
        								p.quantity AS quantity_of_available_products, c.product_count, 
-       								SUM(p.price*c.product_count) AS each_entry_cost, total_cost
+       								SUM(p.price*c.product_count) AS each_entry_cost, (total - $2) AS total_cost
 
 									FROM Cart As c
 									INNER JOIN Product AS p ON c.product_id = p.product_id
 									CROSS JOIN (
-										SELECT SUM(p.price*c.product_count) AS total_cost
+										SELECT SUM(p.price*c.product_count) AS total
 										FROM Cart As c
 										INNER JOIN Product AS p ON c.product_id = p.product_id
 										WHERE c.account_id = $1
 										) AS totalCostComputation
-									GROUP BY p.product_id, p.name, p.color, p.price, c.product_count, total_cost`)
+									GROUP BY p.product_id, p.name, p.color, p.price, c.product_count, total`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -237,7 +230,7 @@ func (productQuery *ProductQuery) GetProductsOfCartListWithTotalCostByAccountID(
 
 	defer query.Close()
 
-	row, err := query.Query(accountID)
+	row, err := query.Query(accountID, promotionCodeValue)
 
 	if err != nil {
 		log.Fatal(err)
