@@ -28,7 +28,6 @@ CREATE TABLE Address(
 CREATE TABLE Notification (
     notification_id SERIAL PRIMARY KEY,
     account_id INT REFERENCES Account, -- FK
-    subject VARCHAR(100) NOT NULL,
     description TEXT NOT NULL
 );
 
@@ -203,6 +202,35 @@ BEGIN
         )
         THEN
             RAISE EXCEPTION 'There is a product in your cart which is not available in the store';
+    END IF;
+END;
+$$;
+
+CREATE PROCEDURE RefreshNotificationsAndClearAvailableWatchListProducts(
+    AccountID INTEGER
+)
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+    IF EXISTS (
+        SELECT *
+        FROM WatchList AS wl
+        INNER JOIN Product AS p ON wl.product_id = p.product_id
+        WHERE p.quantity > 0 AND wl.account_id = AccountID
+        )
+        THEN
+            INSERT INTO Notification (account_id, description)
+            SELECT AccountID, CONCAT('Product "', name ,'" with ID = ', product_id, ' is now available')
+            FROM (
+                SELECT p.name, wl.product_id
+                FROM WatchList AS wl
+                INNER JOIN Product AS p ON wl.product_id = p.product_id
+                WHERE p.quantity > 0 AND wl.account_id = AccountID
+                 ) AS WatchListWithProduct;
+
+            DELETE FROM WatchList AS wl
+                USING Product AS p
+            WHERE p.quantity > 0 AND wl.account_id = AccountID;
     END IF;
 END;
 $$;
