@@ -214,13 +214,22 @@ func (productQuery *ProductQuery) GetProductsOfWatchList(accountID uint64, produ
 	return products, nil
 }
 
-func (productQuery *ProductQuery) GetProductsOfCartList(accountID uint64, productID uint64) ([]DataSignatures.GetProductFromCart, error) {
+func (productQuery *ProductQuery) GetProductsOfCartListWithTotalCostByAccountID(accountID uint64) ([]DataSignatures.GetProductFromCart, error) {
 	db := productQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight, p.quantity, c.product_count
-									FROM Product AS p
-									INNER JOIN Cart AS c ON p.product_id = c.product_id
-									WHERE c.account_id = $1 AND c.product_id = $2`)
+	query, err := db.Prepare(`SELECT p.product_id, p.name, p.color, p.price, p.weight AS product_wight, 
+       								p.quantity AS quantity_of_available_products, c.product_count, 
+       								SUM(p.price*c.product_count) AS each_entry_cost, total_cost
+
+									FROM Cart As c
+									INNER JOIN Product AS p ON c.product_id = p.product_id
+									CROSS JOIN (
+										SELECT SUM(p.price*c.product_count) AS total_cost
+										FROM Cart As c
+										INNER JOIN Product AS p ON c.product_id = p.product_id
+										WHERE c.account_id = $1
+										) AS totalCostComputation
+									GROUP BY p.product_id, p.name, p.color, p.price, c.product_count, total_cost`)
 
 	if err != nil {
 		log.Fatal(err)
@@ -228,7 +237,7 @@ func (productQuery *ProductQuery) GetProductsOfCartList(accountID uint64, produc
 
 	defer query.Close()
 
-	row, err := query.Query(accountID, productID)
+	row, err := query.Query(accountID)
 
 	if err != nil {
 		log.Fatal(err)
@@ -237,8 +246,9 @@ func (productQuery *ProductQuery) GetProductsOfCartList(accountID uint64, produc
 	var products []DataSignatures.GetProductFromCart
 	for row.Next() {
 		var product DataSignatures.GetProductFromCart
-		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price,
-			&product.Weight, &product.Quantity, &product.RequestedQuantity)
+
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity,
+			&product.RequestedQuantity, &product.EachEntryCost, &product.TotalCartCost)
 
 		if err != nil {
 			log.Fatal(err)

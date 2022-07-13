@@ -12,4 +12,6 @@ type GetProduct struct {
 type GetProductFromCart struct {
 	GetProduct
 	RequestedQuantity uint64 `json:"requested_quantity"`
+	EachEntryCost     uint64 `json:"each_entry_cost"`
+	TotalCartCost     uint64 `json:"total_cart_cost"`
 }
