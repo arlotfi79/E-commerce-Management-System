@@ -46,8 +46,7 @@ CREATE TABLE OrderItem(
 
 CREATE TABLE PromotionCode(
     promotion_code_id SERIAL PRIMARY KEY,
-    order_id INT REFERENCES OrderItem, -- FK
-    value FLOAT CHECK ( value > 0 ) NOT NULL,
+    value NUMERIC CHECK ( value > 0 ) NOT NULL,
     expire_date TIMESTAMP NOT NULL
 );
 
@@ -72,8 +71,8 @@ CREATE TABLE Product(
     product_id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     color COLOR,
-    price FLOAT CHECK ( price > 0 ) NOT NULL,
-    weight FLOAT CHECK ( weight > 0 ) NOT NULL,
+    price NUMERIC CHECK ( price > 0 ) NOT NULL,
+    weight NUMERIC CHECK ( weight > 0 ) NOT NULL,
     Quantity INT NOT NULL
 );
 
