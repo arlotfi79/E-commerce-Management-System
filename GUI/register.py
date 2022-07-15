@@ -1,6 +1,8 @@
 from tkinter import *
+from tkinter import messagebox
 import requests
 from datetime import datetime
+
 global firstName
 global lastName
 global email
@@ -9,6 +11,8 @@ global username
 global password
 global bDate
 global gender
+
+global register_screen
 
 def register_user(mainScreen):
     fname = firstName.get()
@@ -20,8 +24,7 @@ def register_user(mainScreen):
     birthDate = bDate.get()
     gndr = gender.get()
 
-    #TODO: register user
-    requests.post('http://localhost:8082/signup', json={
+    response = requests.post('http://localhost:8082/signup', json={
         "username": uname,
         "email": mail,
         "name": fname,
@@ -32,12 +35,19 @@ def register_user(mainScreen):
         "joinDate" : datetime.now().isoformat()+"Z",
         "phoneNumber": mobile
     })
+    if response.status_code == 200:
+        messagebox.showinfo("registration", "Register Successfully")
+        register_screen.destroy()
+    else:
+        messagebox.showerror("err", "Please try again!")
 
 
 
 
 def register(mainScreen):
-    register_screen = Toplevel()
+    global register_screen
+
+    register_screen = Toplevel(mainScreen)
     register_screen.title("Register")
     register_screen.geometry("400x550")
 
