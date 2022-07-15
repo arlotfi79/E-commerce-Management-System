@@ -147,3 +147,35 @@ func (UserQuery *UserQuery) GetUserByPhoneNumber(phoneNumber string) ([]DataSign
 	}
 	return accounts, err
 }
+
+func (UserQuery *UserQuery) GetUserById(id uint64) ([]DataSignatures.GetAccount, error) {
+	db := UserQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT * FROM Account WHERE account_id=$1`)
+
+	if err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+
+	defer query.Close()
+	rows, err := query.Query(id)
+	if err != nil {
+		log.Fatalln(err)
+		return nil, err
+	}
+	var accounts []DataSignatures.GetAccount
+	for rows.Next() {
+		var account DataSignatures.GetAccount
+
+		err = rows.Scan(&account.Id, &account.Name, &account.LastName, &account.UserName, &account.Password, &account.PhoneNumber, &account.Email, &account.Gender, &account.BirthDate, &account.JoinDate)
+
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		accounts = append(accounts, account)
+	}
+	return accounts, err
+}
