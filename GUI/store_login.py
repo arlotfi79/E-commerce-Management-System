@@ -3,14 +3,14 @@ from tkinter import *
 global username_verify
 global password_verify
 
-def login_verification(mainScreen):
+def store_login_process(mainScreen):
     username = username_verify.get()
     password = password_verify.get()
 
     #TODO: login process
 
 
-def login(mainScreen):
+def store_login(mainScreen):
     login_screen = Toplevel()
     login_screen.title("Login")
     login_screen.geometry("400x300")
@@ -37,4 +37,4 @@ def login(mainScreen):
     password__login_entry.pack()
 
     Label(login_screen, text="").pack()
-    Button(login_screen, text="Login", width=30, height=2, bg="#0099d8", command=lambda: login_verification(mainScreen)).pack()
+    Button(login_screen, text="Login", width=30, height=2, bg="#0099d8", command=lambda: store_login_process(mainScreen)).pack()

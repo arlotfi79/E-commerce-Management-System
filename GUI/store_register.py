@@ -6,7 +6,7 @@ global email
 global phoneNumber
 global password
 
-def register_user(mainScreen):
+def register_store(mainScreen):
     fname = firstName.get()
     lname = lastName.get()
     mail = email.get()
@@ -19,7 +19,7 @@ def register_user(mainScreen):
 
 
 
-def register(mainScreen):
+def register_store(mainScreen):
     register_screen = Toplevel()
     register_screen.title("Register")
     register_screen.geometry("400x550")
@@ -86,4 +86,4 @@ def register(mainScreen):
     Label(register_screen, text="").pack()
 
     # Set register button
-    Button(register_screen, text="Register", bg="#0099d8", height="2", width="30", command=lambda: register_user(mainScreen)).pack()
+    Button(register_screen, text="Register", bg="#0099d8", height="2", width="30", command=lambda : register_store(mainScreen)).pack()

@@ -1,11 +1,8 @@
 from tkinter import *
-from review import upVote, downVote, showReviews
-
-cart = {}
+from review import showReviews
 
 def addToCart(id, details):
-    global cart
-    cart[id] = details
+    pass #TODO
 
 def showProductDetails(productId):
     details = {}  #TODO: get details by ID
@@ -26,8 +23,6 @@ def showProductDetails(productId):
     Button(product_screen, text="Add to Cart", width=30, height=2, bg="#0099d8",
            command=lambda: addToCart(productId, details)).pack()
     Label(product_screen, text="").pack()
-    Button(product_screen, text="Upvote", width=30, height=2, bg="#00830f", command=upVote).pack()
-    Button(product_screen, text="DownVote", width=30, height=2, bg="#de0100", command=downVote).pack()
     Button(product_screen, text="reviews", width=30, height=2, bg="#ffffff", command=showReviews).pack()
 
 

@@ -5,16 +5,6 @@ global massage_Screen
 global addreview_Screen
 global review_screen
 
-def upVote():
-    pass
-    #TODO: increase number of upvotes
-
-
-def downVote():
-    pass
-    #TODO: increase number of downvotes
-
-
 def _addReview(subjectInput, textInput):
     global addreview_Screen
     global review_screen

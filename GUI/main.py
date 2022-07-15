@@ -1,49 +1,34 @@
 from tkinter import *
 from register import register
 from login import login
-from productCategories import showCategories
-from profile import openProfile
+from store_login import store_login
+from store_register import register_store
 
-global main_screen
-
-def main_account_screen():
-    global main_screen
-    main_screen = Tk()  # create a GUI window
+def logIn_screen():
+    main_screen = Tk()
+    main_screen.geometry("400x500")
     main_screen.title("E-commerce Management System")
-    main_screen.geometry("500x350")
 
-    Label(text="E-commerce Management System", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
+
+    Label(text="Costumer", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
+    Label(text="").pack()
+
+    Button(text="Login", height="2", width="30", command=lambda: login(main_screen)).pack()
+    Label(text="").pack()
+
+    Button(text="Register", bg="#0099d8", height="2", width="30", command=lambda: register(main_screen)).pack()
     Label(text="").pack()
     Label(text="").pack()
 
-    Button(text="Product categories", bg="#0099d8", height="2", width="30", command=showCategories, font=("Calibri", 13)).pack()
+    Label(text="Store", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
+
+    Button(text="Login", height="2", width="30", command=lambda: store_login(main_screen)).pack()
     Label(text="").pack()
-    Button(text="Profile", bg="#0099d8", height="2", width="30", command=openProfile, font=("Calibri", 13)).pack()
+
+    Button(text="Register", bg="#0099d8", height="2", width="30", command=lambda: register_store(main_screen)).pack()
 
     main_screen.mainloop()
 
 
-
-def logIn_screen():
-    global main_screen
-    main_screen = Tk()  # create a GUI window
-    main_screen.geometry("400x250")  # set the configuration of GUI window
-    main_screen.title("E-commerce Management System")  # set the title of GUI window
-
-    # create a Form label
-    Label(text="Please Log in first", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
-    Label(text="").pack()
-
-    # create Login Button
-    Button(text="Login", height="2", width="30", command=login).pack()
-    Label(text="").pack()
-
-    # create a register button
-    Button(text="Register", bg="#0099d8", height="2", width="30", command=register).pack()
-
-    main_screen.mainloop()  # start the GUI
-
-
-logIn_screen()  # call the main_account_screen() function
-# main_account_screen()
+logIn_screen()
