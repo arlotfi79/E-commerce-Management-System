@@ -1,17 +1,16 @@
 package main
 
 import (
-
 	"API/Database"
 	"API/Infrastructure/Handlers"
 	"API/Infrastructure/auth"
 
 	middleware "API/Middleware"
 
-	"log"
-	"os"
 	"context"
 	"github.com/gin-gonic/gin"
+	"log"
+	"os"
 )
 
 func main() {
@@ -29,7 +28,6 @@ func main() {
 	// authInt := auth.NewAuth()
 	tokenInt := auth.NewToken()
 
-
 	err := db.Init()
 	defer db.Close()
 
@@ -44,19 +42,25 @@ func main() {
 	var accHandle Handlers.AccountHandler
 	var categHandle Handlers.CategoryHandler
 	var prodHandle Handlers.ProductHandler
-
-
+	var tickHandle Handlers.TicketHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db)
 	prodHandler := prodHandle.NewProductHandler(&db)
+	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
+	router.GET("/profile", accountHandler.ProfileHandler)
+
 	router.GET("/category", categHandler.GetAllCategoriesHandler)
 	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
 
-
+	ticketGroup := router.Group("/ticket")
+	{
+		ticketGroup.GET("", tickHandler.GetTicketsByOrderIDHandler)
+		ticketGroup.POST("", tickHandler.PostTicketHandler)
+	}
 
 	err = router.Run(":8081")
 	if err != nil {
