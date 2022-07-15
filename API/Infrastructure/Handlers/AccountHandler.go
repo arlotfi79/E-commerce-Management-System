@@ -102,3 +102,20 @@ func (accountHandler *AccountHandler) SigninHandler(c *gin.Context) {
 
 }
 
+func (accountHandler *AccountHandler) ProfileHandler(c *gin.Context) {
+	userq := q.NewUserQuery(accountHandler.dbClient)
+	var user []DataSignatures.GetAccount
+	acccessInfo, err := accountHandler.tokenInterface.ExtractTokenMetadata(c.Request)
+  if err == nil {
+  	user, err = userq.GetUserById(acccessInfo.UserId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+		c.JSON(http.StatusOK, user[0])
+		return 
+	} else {
+		c.JSON(http.StatusUnauthorized, "Unauthorized")
+		return
+	}
+}
