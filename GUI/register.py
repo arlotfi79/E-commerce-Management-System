@@ -1,5 +1,6 @@
 from tkinter import *
-
+import requests
+from datetime import datetime
 global firstName
 global lastName
 global email
@@ -20,7 +21,17 @@ def register_user(mainScreen):
     gndr = gender.get()
 
     #TODO: register user
-
+    requests.post('http://localhost:8082/signup', json={
+        "username": uname,
+        "email": mail,
+        "name": fname,
+        "lastName": lname,
+        "password": pas,
+        "gender": gndr.upper(),
+        "birthDate": birthDate+"T00:00:00.419Z",
+        "joinDate" : datetime.now().isoformat()+"Z",
+        "phoneNumber": mobile
+    })
 
 
 

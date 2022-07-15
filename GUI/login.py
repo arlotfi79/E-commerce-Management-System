@@ -1,13 +1,23 @@
 from tkinter import *
 
+import requests
+
 global username_verify
 global password_verify
+global account_token
 
 def login_verification(mainScreen):
     username = username_verify.get()
     password = password_verify.get()
 
     #TODO: login process
+    response = requests.post('http://localhost:8082/signin', json={
+        "username": username,
+        "password": password
+    })
+
+    global account_token
+    account_token = response.json()['access_token']
 
 
 def login(mainScreen):
