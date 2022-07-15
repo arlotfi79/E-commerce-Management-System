@@ -42,14 +42,15 @@ func main() {
 	var accHandle Handlers.AccountHandler
 	var categHandle Handlers.CategoryHandler
 	var prodHandle Handlers.ProductHandler
+	var reviewHandle Handlers.ReviewHandler
 	var tickHandle Handlers.TicketHandler
 	var messageHandle Handlers.MessageHandler
 	var cartHandle Handlers.CartHandler
 
-
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db)
 	prodHandler := prodHandle.NewProductHandler(&db)
+	reviewHandler := reviewHandle.NewReviewHandler(&db, redisService.Auth, tokenInt)
 	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
 	messageHandler := messageHandle.NewTMessageHandler(&db, redisService.Auth, tokenInt)
 	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
@@ -72,11 +73,17 @@ func main() {
 		ticketGroup.GET("", tickHandler.GetTicketsByOrderIDHandler)
 		ticketGroup.POST("", tickHandler.PostTicketHandler)
 	}
-	
+
 	messageGroup := router.Group("/message")
 	{
 		messageGroup.GET("", messageHandler.GetMessagesByTicketIDHandler)
 		messageGroup.POST("", messageHandler.PostMessageHandler)
+	}
+
+	productReviewGroup := router.Group("/productReview")
+	{
+		productReviewGroup.GET("", reviewHandler.GetReviewsWithVotesByProductIDHandler)
+		productReviewGroup.POST("", reviewHandler.PostReviewHandler)
 	}
 
 	err = router.Run(":8081")

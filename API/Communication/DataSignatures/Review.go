@@ -10,8 +10,8 @@ type ReviewWithVotes struct {
 }
 
 type PostReview struct {
-	ProductID   string `json:"product_id"`
-	AccountID   string `json:"account_id"`
+	ProductID   uint64 `json:"product_id"`
+	AccountID   uint64 `json:"account_id"`
 	Description string `json:"description"`
 	Rating      uint64 `json:"rating"`
 }
