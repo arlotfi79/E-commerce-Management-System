@@ -80,7 +80,14 @@ CREATE TABLE Review(
     review_id SERIAL PRIMARY KEY,
     product_id INT REFERENCES Product, -- FK
     account_id INT REFERENCES Account, -- FK
+    description TEXT NOT NULL,
     rating INT CHECK ( 0 <= rating AND rating <= 5 )
+);
+
+CREATE TABLE Review_Reply (
+    reply_id SERIAL PRIMARY KEY,
+    review_id INT REFERENCES Review, -- FK
+    reply_text TEXT NOT NULL
 );
 
 CREATE TABLE Store(
