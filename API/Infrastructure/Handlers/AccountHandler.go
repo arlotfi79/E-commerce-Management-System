@@ -105,9 +105,9 @@ func (accountHandler *AccountHandler) SigninHandler(c *gin.Context) {
 func (accountHandler *AccountHandler) ProfileHandler(c *gin.Context) {
 	userq := q.NewUserQuery(accountHandler.dbClient)
 	var user []DataSignatures.GetAccount
-	acccessInfo, err := accountHandler.tokenInterface.ExtractTokenMetadata(c.Request)
+	accessInfo, err := accountHandler.tokenInterface.ExtractTokenMetadata(c.Request)
   if err == nil {
-  	user, err = userq.GetUserById(acccessInfo.UserId)
+  	user, err = userq.GetUserById(accessInfo.UserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
