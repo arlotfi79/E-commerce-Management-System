@@ -7,6 +7,9 @@ global lastName
 global email
 global phoneNumber
 
+def showNotifications():
+    pass
+
 def submitChanges():
     fname = firstName.get()
     lname = lastName.get()
@@ -129,3 +132,4 @@ def openProfile():
     Button(profile_screen, text="My orders", width=30, height=2, bg="#0099d8", command=showOrders).pack()
     Button(profile_screen, text="Add address", width=30, height=2, bg="#0099d8", command=addAddress).pack()
     Button(profile_screen, text="Shopping Cart", width=30, height=2, bg="#0099d8", command=showCartProducts).pack()
+    Button(profile_screen, text="Notifications", width=30, height=2, bg="#0099d8", command=showNotifications).pack()
