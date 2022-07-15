@@ -42,12 +42,15 @@ func main() {
 	var accHandle Handlers.AccountHandler
 	var categHandle Handlers.CategoryHandler
 	var prodHandle Handlers.ProductHandler
-	var tickHandle Handlers.TicketHandler
+	// var tickHandle Handlers.TicketHandler
+	var cartHandle Handlers.CartHandler
+
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db)
 	prodHandler := prodHandle.NewProductHandler(&db)
-	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
+	// tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
+	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
@@ -56,10 +59,10 @@ func main() {
 	router.GET("/category", categHandler.GetAllCategoriesHandler)
 	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
 
-	ticketGroup := router.Group("/ticket")
+	cartGroup := router.Group("/cart")
 	{
-		ticketGroup.GET("", tickHandler.GetTicketsByOrderIDHandler)
-		ticketGroup.POST("", tickHandler.PostTicketHandler)
+		cartGroup.GET("", cartHandler.GetCartHandler)
+		cartGroup.POST("", cartHandler.AddToCartHandler)
 	}
 
 	err = router.Run(":8081")
