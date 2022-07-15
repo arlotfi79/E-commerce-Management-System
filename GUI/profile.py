@@ -1,14 +1,108 @@
 from tkinter import *
 from shoppingCart import showCartProducts
 
+global firstName
+global lastName
+global email
+global phoneNumber
+
+def submitChanges():
+    fname = firstName.get()
+    lname = lastName.get()
+    mail = email.get()
+    mobile = phoneNumber.get()
+
+    #TODO: edit info
+
 def editInfo():
-    pass
+    edit_screen = Toplevel()
+    edit_screen.title("Register")
+    edit_screen.geometry("400x550")
+
+    font = ("Calibri", 11)
+
+    # Set text variables
+    global firstName
+    global lastName
+    global email
+    global phoneNumber
+
+    firstName = StringVar()
+    lastName = StringVar()
+    email = StringVar()
+    phoneNumber = StringVar()
+
+    # Set label for user's instruction
+    Label(edit_screen, text="Personal Info", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
+    Label(edit_screen, text="").pack()
+
+    # Set first name
+    firstName_lable = Label(edit_screen, text="First Name * ", font=font)
+    firstName_lable.pack()
+
+    firstName_entry = Entry(edit_screen, textvariable=firstName, font=font, width=30)
+    firstName_entry.pack()
+
+    Label(edit_screen, text="").pack()
+    # Set last name
+    lastName_lable = Label(edit_screen, text="Last Name * ", font=font)
+    lastName_lable.pack()
+
+    lastName_entry = Entry(edit_screen, textvariable=lastName, font=font, width=30)
+    lastName_entry.pack()
+
+    Label(edit_screen, text="").pack()
+    # Set last name
+    email_lable = Label(edit_screen, text="Email * ", font=font)
+    email_lable.pack()
+
+    email_entry = Entry(edit_screen, textvariable=email, font=font, width=30)
+    email_entry.pack()
+
+    Label(edit_screen, text="").pack()
+    # Set phone number
+    phoneNumber_lable = Label(edit_screen, text="Phone Number * ", font=font)
+    phoneNumber_lable.pack()
+
+    phoneNumber_entry = Entry(edit_screen, textvariable=phoneNumber, font=font, width=30)
+    phoneNumber_entry.pack()
+
+    Label(edit_screen, text="").pack()
+    # Set password label
+    password_lable = Label(edit_screen, text="Password * ", font=font)
+    password_lable.pack()
+
+    Label(edit_screen, text="").pack()
+
+    # Set register button
+    Button(edit_screen, text="Submit", bg="#0099d8", height="2", width="30",
+           command=submitChanges).pack()
+
 
 def showOrders():
     pass
 
-def addAddress():
+
+
+def submitAddress(address):
     pass
+    #TODO save address
+
+
+def addAddress():
+    addAddres_screen = Toplevel()
+    addAddres_screen.title("profile")
+    addAddres_screen.geometry("400x300")
+
+    Label(addAddres_screen, text="Add new Address", font=("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
+    Label(addAddres_screen, text="").pack()
+
+    text = Text(addAddres_screen, width=50, height=10)
+    text.pack()
+    Label(addAddres_screen, text="").pack()
+    address = text.get()
+    Button(addAddres_screen, text="Add", width=30, height=2, bg="#0099d8", command=lambda: submitAddress(address)).pack()
+
 
 
 def openProfile():
