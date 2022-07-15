@@ -16,6 +16,148 @@ func NewProductQuery(dbClient *Database.Postgresql) *ProductQuery {
 
 // -------------------------------- GET ----------------------------------
 
+// -------- Filters ---------
+
+func (productQuery *ProductQuery) GetProductsByPriceAscOrder() ([]DataSignatures.GetProduct, error) {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT *
+									FROM Product
+									ORDER BY price ASC`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	row, err := query.Query()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var products []DataSignatures.GetProduct
+	for row.Next() {
+		var product DataSignatures.GetProduct
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
+func (productQuery *ProductQuery) GetProductsByPriceDescOrder() ([]DataSignatures.GetProduct, error) {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT *
+									FROM Product
+									ORDER BY price DESC`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	row, err := query.Query()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var products []DataSignatures.GetProduct
+	for row.Next() {
+		var product DataSignatures.GetProduct
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
+func (productQuery *ProductQuery) GetProductsInRangeOfPrices(lower uint64, upper uint64) ([]DataSignatures.GetProduct, error) {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT *
+									FROM Product
+									WHERE price >= $1 AND price <= $2
+									ORDER BY price DESC`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	row, err := query.Query(lower, upper)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var products []DataSignatures.GetProduct
+	for row.Next() {
+		var product DataSignatures.GetProduct
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
+func (productQuery *ProductQuery) GetProductsByRatingOrder() ([]DataSignatures.GetProduct, error) {
+	db := productQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`SELECT *
+									FROM Product AS p
+									INNER JOIN Review AS r ON p.product_id = r.product_id
+									ORDER BY r.rating DESC`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	row, err := query.Query()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var products []DataSignatures.GetProduct
+	for row.Next() {
+		var product DataSignatures.GetProduct
+		err = row.Scan(&product.Id, &product.Name, &product.Color, &product.Price, &product.Weight, &product.Quantity)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		products = append(products, product)
+	}
+
+	return products, nil
+}
+
+// ------ End of Filters -----
+
 func (productQuery *ProductQuery) GetProductByID(id uint64) (DataSignatures.GetProduct, error) {
 	db := productQuery.dbClient.GetDB()
 
