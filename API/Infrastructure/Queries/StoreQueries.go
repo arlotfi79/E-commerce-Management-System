@@ -29,10 +29,6 @@ func (storeQuery *StoreQuery) GetStoreByID(id uint64) (DataSignatures.Store, err
 
 	row := query.QueryRow(id)
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	var store DataSignatures.Store
 	err = row.Scan(&store.Id, &store.Name, &store.PhoneNumber)
 
