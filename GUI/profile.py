@@ -1,5 +1,6 @@
 from tkinter import *
 from shoppingCart import showCartProducts
+from orders import showOrderDetails
 
 global firstName
 global lastName
@@ -80,7 +81,18 @@ def editInfo():
 
 
 def showOrders():
-    pass
+    orders = {}    #id:date  TODO
+
+    order_screen = Toplevel()
+    order_screen.title("Orders")
+    order_screen.geometry("400x600")
+
+    Label(order_screen, text="Orders", font=("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
+    Label(order_screen, text="").pack()
+
+    for item in orders.keys():
+        Button(order_screen, text=orders[item], width=300, height=5, font=("Calibri", 13),
+               command=lambda: showOrderDetails(item)).pack()
 
 
 

@@ -1,20 +1,20 @@
 from tkinter import *
-from products import showProductDetails, cart
+from products import showProductDetails
 
 global cart_screen
 
 
 def order():
     global cart_screen
-    global cart
     cart_screen.destroy()
 
     # TODO: save order
 
-    cart = {}
 
 
 def showCartProducts():
+    cart = {} #TODO
+
     global cart_screen
     cart_screen = Toplevel()
     cart_screen.title("Shopping Cart")
