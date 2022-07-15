@@ -1,4 +1,6 @@
 from tkinter import *
+from store_edit_info import editInfo
+from store_add_product import addProduct
 
 def main_account_screen(mainScreen):
     main_screen = Tk()
@@ -9,9 +11,9 @@ def main_account_screen(mainScreen):
     Label(text="").pack()
     Label(text="").pack()
 
-    Button(text="Add new Product", bg="#0099d8", height="2", width="30", font=("Calibri", 13)).pack() #TODO
+    Button(text="Add new Product", bg="#0099d8", height="2", width="30", font=("Calibri", 13), command=editInfo).pack()
     Label(text="").pack()
     Label(text="").pack()
-    Button(text="Edit Info", bg="#0099d8", height="2", width="30", font=("Calibri", 13)).pack() #TODO
+    Button(text="Edit Info", bg="#0099d8", height="2", width="30", font=("Calibri", 13), command= addProduct).pack()
 
     main_screen.mainloop()
