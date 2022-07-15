@@ -1,4 +1,7 @@
 from tkinter import *
+import requests
+from datetime import datetime
+from tkinter import messagebox
 
 global firstName
 global lastName
@@ -8,8 +11,10 @@ global username
 global password
 global bDate
 global gender
+global register_screen
 
-def register_store(mainScreen):
+
+def register_new_store():
     fname = firstName.get()
     lname = lastName.get()
     mail = email.get()
@@ -19,19 +24,31 @@ def register_store(mainScreen):
     birthDate = bDate.get()
     gndr = gender.get()
 
-    #TODO: register user
+    response = requests.post('http://localhost:8082/signup', json={
+        "username": uname,
+        "email": mail,
+        "name": fname,
+        "lastName": lname,
+        "password": pas,
+        "gender": gndr.upper(),
+        "birthDate": birthDate + "T00:00:00.419Z",
+        "joinDate": datetime.now().isoformat() + "Z",
+        "phoneNumber": mobile
+    })
+    if response.status_code == 200:
+        messagebox.showinfo("registration", "Register Successfully")
+        global register_screen
+        register_screen.destroy()
+    else:
+        messagebox.showerror("err", "Please try again!")
 
 
-
-
-
-def register_store(mainScreen):
+def register_store():
     register_screen = Toplevel()
     register_screen.title("Register")
     register_screen.geometry("400x550")
 
     font = ("Calibri", 11)
-
 
     # Set text variables
     global firstName
@@ -53,14 +70,15 @@ def register_store(mainScreen):
     gender = StringVar()
 
     # Set label for user's instruction
-    Label(register_screen, text="Please fill out the form", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
+    Label(register_screen, text="Please fill out the form", bg="#0099d8", width="300", height="2",
+          font=("Calibri", 13)).pack()
     Label(register_screen, text="").pack()
 
     # Set first name
     firstName_lable = Label(register_screen, text="First Name * ", font=font)
     firstName_lable.pack()
 
-    firstName_entry = Entry(register_screen, textvariable=firstName, font=font, width= 30)
+    firstName_entry = Entry(register_screen, textvariable=firstName, font=font, width=30)
     firstName_entry.pack()
 
     Label(register_screen, text="").pack()
@@ -68,7 +86,7 @@ def register_store(mainScreen):
     lastName_lable = Label(register_screen, text="Last Name * ", font=font)
     lastName_lable.pack()
 
-    lastName_entry = Entry(register_screen, textvariable=lastName, font=font, width= 30)
+    lastName_entry = Entry(register_screen, textvariable=lastName, font=font, width=30)
     lastName_entry.pack()
 
     Label(register_screen, text="").pack()
@@ -76,7 +94,7 @@ def register_store(mainScreen):
     email_lable = Label(register_screen, text="Email * ", font=font)
     email_lable.pack()
 
-    email_entry = Entry(register_screen, textvariable=email, font=font, width= 30)
+    email_entry = Entry(register_screen, textvariable=email, font=font, width=30)
     email_entry.pack()
 
     Label(register_screen, text="").pack()
@@ -84,7 +102,7 @@ def register_store(mainScreen):
     phoneNumber_lable = Label(register_screen, text="Phone Number * ", font=font)
     phoneNumber_lable.pack()
 
-    phoneNumber_entry = Entry(register_screen, textvariable=phoneNumber, font=font, width= 30)
+    phoneNumber_entry = Entry(register_screen, textvariable=phoneNumber, font=font, width=30)
     phoneNumber_entry.pack()
 
     Label(register_screen, text="").pack()
@@ -125,4 +143,5 @@ def register_store(mainScreen):
     Label(register_screen, text="").pack()
 
     # Set register button
-    Button(register_screen, text="Register", bg="#0099d8", height="2", width="30", command=lambda : register_store(mainScreen)).pack()
+    Button(register_screen, text="Register", bg="#0099d8", height="2", width="30",
+           command=register_new_store).pack()

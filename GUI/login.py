@@ -1,23 +1,30 @@
 from tkinter import *
+from tkinter import messagebox
+from main_customer_account_screen import main_account_screen
 
 import requests
 
 global username_verify
 global password_verify
 global account_token
+global login_screen
 
 def login_verification(mainScreen):
     username = username_verify.get()
     password = password_verify.get()
 
-    #TODO: login process
     response = requests.post('http://localhost:8082/signin', json={
         "username": username,
         "password": password
     })
 
-    global account_token
-    account_token = response.json()['access_token']
+    if response.status_code == 200:
+        global account_token
+        account_token = response.json()['access_token']
+        login_screen.destroy()
+        main_account_screen(mainScreen)
+    else:
+        messagebox.showerror("err", "Please try again!")
 
 
 def login(mainScreen):

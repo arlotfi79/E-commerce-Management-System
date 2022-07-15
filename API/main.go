@@ -44,12 +44,15 @@ func main() {
 	var prodHandle Handlers.ProductHandler
 	var tickHandle Handlers.TicketHandler
 	var messageHandle Handlers.MessageHandler
+	var cartHandle Handlers.CartHandler
+
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db)
 	prodHandler := prodHandle.NewProductHandler(&db)
 	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
 	messageHandler := messageHandle.NewTMessageHandler(&db, redisService.Auth, tokenInt)
+	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
@@ -58,12 +61,18 @@ func main() {
 	router.GET("/category", categHandler.GetAllCategoriesHandler)
 	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
 
+	cartGroup := router.Group("/cart")
+	{
+		cartGroup.GET("", cartHandler.GetCartHandler)
+		cartGroup.POST("", cartHandler.AddToCartHandler)
+	}
+
 	ticketGroup := router.Group("/ticket")
 	{
 		ticketGroup.GET("", tickHandler.GetTicketsByOrderIDHandler)
 		ticketGroup.POST("", tickHandler.PostTicketHandler)
 	}
-
+	
 	messageGroup := router.Group("/message")
 	{
 		messageGroup.GET("", messageHandler.GetMessagesByTicketIDHandler)
