@@ -53,6 +53,8 @@ func main() {
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
+	router.GET("/profile", accountHandler.ProfileHandler)
+	
 	router.GET("/category", categHandler.GetAllCategoriesHandler)
 	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
 
