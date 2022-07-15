@@ -4,14 +4,20 @@ global firstName
 global lastName
 global email
 global phoneNumber
+global username
 global password
+global bDate
+global gender
 
 def register_store(mainScreen):
     fname = firstName.get()
     lname = lastName.get()
     mail = email.get()
     mobile = phoneNumber.get()
+    uname = username.get()
     pas = password.get()
+    birthDate = bDate.get()
+    gndr = gender.get()
 
     #TODO: register user
 
@@ -32,13 +38,19 @@ def register_store(mainScreen):
     global lastName
     global email
     global phoneNumber
+    global username
     global password
+    global bDate
+    global gender
 
     firstName = StringVar()
     lastName = StringVar()
     email = StringVar()
     phoneNumber = StringVar()
+    username = StringVar()
     password = StringVar()
+    bDate = StringVar()
+    gender = StringVar()
 
     # Set label for user's instruction
     Label(register_screen, text="Please fill out the form", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
@@ -76,12 +88,39 @@ def register_store(mainScreen):
     phoneNumber_entry.pack()
 
     Label(register_screen, text="").pack()
-    # Set password label
+    # Set username
+    username_lable = Label(register_screen, text="Username * ", font=font)
+    username_lable.pack()
+
+    username_entry = Entry(register_screen, textvariable=username, font=font, width=30)
+    username_entry.pack()
+
+    Label(register_screen, text="").pack()
+
+    # Set password
     password_lable = Label(register_screen, text="Password * ", font=font)
     password_lable.pack()
 
-    password_entry = Entry(register_screen, textvariable=password, show='*', font=font, width= 30)
+    password_entry = Entry(register_screen, textvariable=password, show='*', font=font, width=30)
     password_entry.pack()
+
+    Label(register_screen, text="").pack()
+
+    # Set Bdate
+    bDate_lable = Label(register_screen, text="Birth Date* (2013-10-21) ", font=font)
+    bDate_lable.pack()
+
+    bDate_entry = Entry(register_screen, textvariable=bDate, font=font, width=30)
+    bDate_entry.pack()
+
+    Label(register_screen, text="").pack()
+
+    # Set gender
+    gender_lable = Label(register_screen, text="Gender* (male/ female/ other) ", font=font)
+    gender_lable.pack()
+
+    gender_entry = Entry(register_screen, textvariable=gender, font=font, width=30)
+    gender_entry.pack()
 
     Label(register_screen, text="").pack()
 
