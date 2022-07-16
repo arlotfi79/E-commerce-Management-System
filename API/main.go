@@ -49,7 +49,7 @@ func main() {
 	var cartHandle Handlers.CartHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
-	categHandler := categHandle.NewCategoryHandler(&db)
+	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
 	prodHandler := prodHandle.NewProductHandler(&db, redisService.Auth, tokenInt)
 	reviewHandler := reviewHandle.NewReviewHandler(&db, redisService.Auth, tokenInt)
 	replyHandler := replyHandle.NewReplyHandler(&db, redisService.Auth, tokenInt)
@@ -64,6 +64,7 @@ func main() {
 	categoryGroup := router.Group("category")
 	{
 		categoryGroup.GET("/all", categHandler.GetAllCategoriesHandler)
+		categoryGroup.POST("/addNew", categHandler.AddNewCategoryHandler)
 	}
 
 	productGroup := router.Group("product")

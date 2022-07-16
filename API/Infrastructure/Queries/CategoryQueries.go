@@ -47,3 +47,24 @@ func (categoryQuery *CategoryQuery) GetAllCategories() ([]DataSignatures.Categor
 
 	return categories, nil
 }
+
+func (categoryQuery *CategoryQuery) AddNewCategory(category *DataSignatures.Category) error {
+	db := categoryQuery.dbClient.GetDB()
+
+	query, err := db.Prepare(`INSERT INTO Category (name)
+									VALUES ($1)`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	_, err = query.Exec(category.Name)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
