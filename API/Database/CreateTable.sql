@@ -241,3 +241,49 @@ BEGIN
     END IF;
 END;
 $$;
+
+-- Insert dummy data
+INSERT INTO Product (name, color, price, weight, Quantity)
+VALUES ('Galaxy S10', 'RED', 950, 100, 5);
+
+INSERT INTO Product (name, color, price, weight, Quantity)
+VALUES ('Iphone13 ProMax', 'BLUE', 1000, 100, 3);
+
+INSERT INTO Category (name)
+VALUES ('Mobile Phones');
+
+INSERT INTO product_category (product_id, category_id)
+VALUES (1, 1);
+
+INSERT INTO product_category (product_id, category_id)
+VALUES (2, 1);
+
+INSERT INTO Product (name, color, price, weight, Quantity)
+VALUES ('Asus S15', 'BLACK', 1500, 1000, 2);
+
+INSERT INTO Product (name, color, price, weight, Quantity)
+VALUES ('MacbookPro 2022', 'BLACK', 1500, 1000, 0);
+
+INSERT INTO Category (name)
+VALUES ('Laptop');
+
+INSERT INTO product_category (product_id, category_id)
+VALUES (3, 2);
+
+INSERT INTO product_category (product_id, category_id)
+VALUES (4, 2);
+
+INSERT INTO Product (name, color, price, weight, Quantity)
+VALUES ('TSCO TH-5376', 'BLACK', 500, 50, 4);
+
+INSERT INTO Product (name, color, price, weight, Quantity)
+VALUES ('Raser S23', 'GREEN', 1500, 100, 0);
+
+INSERT INTO Category (name)
+VALUES ('Headphones');
+
+INSERT INTO product_category (product_id, category_id)
+VALUES (5, 3);
+
+INSERT INTO product_category (product_id, category_id)
+VALUES (6, 3);
