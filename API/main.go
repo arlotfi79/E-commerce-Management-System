@@ -48,16 +48,20 @@ func main() {
 	var messageHandle Handlers.MessageHandler
 	var cartHandle Handlers.CartHandler
 	var addressHandle Handlers.AddressHandler
+	var orderHandle Handlers.OrderHandler
+	var watchListHandle Handlers.WatchListHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
-	prodHandler := prodHandle.NewProductHandler(&db, redisService.Auth, tokenInt)
+	productHandler := prodHandle.NewProductHandler(&db, redisService.Auth, tokenInt)
 	reviewHandler := reviewHandle.NewReviewHandler(&db, redisService.Auth, tokenInt)
 	replyHandler := replyHandle.NewReplyHandler(&db, redisService.Auth, tokenInt)
 	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
 	messageHandler := messageHandle.NewTMessageHandler(&db, redisService.Auth, tokenInt)
 	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
 	addressHandler := addressHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
+	orderHandler := orderHandle.NewOrderHandler(&db, redisService.Auth, tokenInt)
+	watchListHandler := watchListHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
@@ -77,15 +81,28 @@ func main() {
 
 	productGroup := router.Group("/product")
 	{
-		productGroup.GET("/byCategory", prodHandler.ProductByCategoryNameHandler)
-		productGroup.POST("/addNewProduct", prodHandler.AddNewProductHandler)
-		productGroup.POST("/addToCategory", prodHandler.AddProductToCategoryHandler)
+		productGroup.GET("/byCategory", productHandler.ProductByCategoryNameHandler)
+		productGroup.GET("/watchlist", productHandler.GetWatchListProductsHandler)
+		productGroup.POST("/addNewProduct", productHandler.AddNewProductHandler)
+		productGroup.POST("/addToCategory", productHandler.AddProductToCategoryHandler)
 	}
 
 	cartGroup := router.Group("/cart")
 	{
 		cartGroup.GET("", cartHandler.GetCartHandler)
 		cartGroup.POST("", cartHandler.AddToCartHandler)
+	}
+
+	watchListGroup := router.Group("/watchlist")
+	{
+		watchListGroup.POST("/add", watchListHandler.AddProductToWatchListHandler)
+		watchListGroup.POST("/remove", watchListHandler.RemoveProductFromWatchListHandler)
+	}
+
+	orderGroup := router.Group("/order")
+	{
+		orderGroup.GET("/all", orderHandler.GetOrderOfAccountHandler)
+		orderGroup.POST("/create", orderHandler.CreateOrderHandler)
 	}
 
 	ticketGroup := router.Group("/ticket")

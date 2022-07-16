@@ -53,7 +53,7 @@ func (orderQuery *OrderQuery) GetOrdersByAccountID(id uint64) ([]DataSignatures.
 
 // -------------------------------- POST ----------------------------------
 
-func (orderQuery *OrderQuery) CreateOrder(order DataSignatures.PostOrder) error {
+func (orderQuery *OrderQuery) CreateOrder(accountID uint64, order DataSignatures.PostOrder) error {
 	db := orderQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`CALL CreateOrderAndClearCart($1, $2, $3, $4, $5)`)
@@ -64,7 +64,7 @@ func (orderQuery *OrderQuery) CreateOrder(order DataSignatures.PostOrder) error 
 
 	defer query.Close()
 
-	_, err = query.Exec(order.AccountID, order.Description, order.Address, order.DeliveryMethod, order.OrderDate)
+	_, err = query.Exec(accountID, order.Description, order.Address, order.DeliveryMethod, order.OrderDate)
 
 	if err != nil {
 		log.Fatal(err)

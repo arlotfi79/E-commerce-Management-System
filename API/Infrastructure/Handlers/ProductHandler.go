@@ -98,3 +98,32 @@ func (productHandler *ProductHandler) AddProductToCategoryHandler(c *gin.Context
 		}
 	}
 }
+
+func (productHandler *ProductHandler) GetWatchListProductsHandler(c *gin.Context) {
+	accessInfo, err := productHandler.tokenInterface.ExtractTokenMetadata(c.Request)
+
+	if err == nil {
+		productq := q.NewProductQuery(productHandler.dbClient)
+		prods, err := productq.GetProductsOfWatchList(accessInfo.UserId)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		response := make([]map[string]interface{}, 0, 0)
+		for i := 0; i < len(prods); i++ {
+			prodObj := make(map[string]interface{})
+			prodObj["id"] = prods[i].Id
+			prodObj["name"] = prods[i].Name
+			prodObj["color"] = prods[i].Color
+			prodObj["price"] = prods[i].Price
+			prodObj["weight"] = prods[i].Weight
+			prodObj["quantity"] = prods[i].Quantity
+
+			response = append(response, prodObj)
+		}
+
+		c.JSON(http.StatusOK, response)
+	}
+
+}
