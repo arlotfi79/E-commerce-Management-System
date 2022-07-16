@@ -4,7 +4,7 @@ from products import showAllProductsInCategory
 
 def showCategories(token):
     while True:
-        response = requests.get('http://localhost:8082/category/all', headers={'Authorization': 'JWT ' + token})
+        response = requests.get('http://localhost:8082/category/all', headers={'Authorization': 'Bearer ' + token})
         if response.status_code == 200:
             categories = response.json()  #{id: name}
             break
@@ -17,4 +17,4 @@ def showCategories(token):
     Label(categories_screen, text="").pack()
 
     for c in categories.keys():
-        Button(categories_screen, text=str(categories[c]), width=30, height=2, bg="#0099d8", command=lambda: showAllProductsInCategory(c, categories[c])).pack()
+        Button(categories_screen, text=str(categories[c]), width=30, height=2, bg="#0099d8", command=lambda: showAllProductsInCategory(c, categories[c], token)).pack()

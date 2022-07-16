@@ -7,8 +7,9 @@ global cart_screen
 def order(account_token):
     global cart_screen
     cart_screen.destroy()
+    cart_screen.update()
 
-    # TODO: save order
+    #TODO: save order
 
 
 

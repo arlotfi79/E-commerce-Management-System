@@ -39,6 +39,7 @@ def register_new_store():
         messagebox.showinfo("registration", "Register Successfully")
         global register_screen
         register_screen.destroy()
+        register_screen.update()
     else:
         messagebox.showerror("err", "Please try again!")
 

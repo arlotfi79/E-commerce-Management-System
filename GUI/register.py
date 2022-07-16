@@ -38,6 +38,7 @@ def register_user():
     if response.status_code == 200:
         messagebox.showinfo("registration", "Register Successfully")
         register_screen.destroy()
+        register_screen.update()
     else:
         messagebox.showerror("err", "Please try again!")
 
