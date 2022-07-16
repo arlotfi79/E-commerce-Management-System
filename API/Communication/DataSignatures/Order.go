@@ -16,3 +16,7 @@ type PostOrder struct {
 	OrderDate      time.Time `json:"orderDate"`
 	Address        string    `json:"address"`
 }
+
+type GetOrderTickets struct {
+	Id             uint64    `json:"id"`
+}
