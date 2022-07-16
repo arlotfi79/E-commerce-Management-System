@@ -13,6 +13,10 @@ type PostProductCategory struct {
 	CategoryID uint64 `json:"category_id"`
 }
 
+type PostProductID struct {
+	Id uint64 `json:"id"`
+}
+
 type GetProduct struct {
 	Id uint64 `json:"id"`
 	PostProduct
