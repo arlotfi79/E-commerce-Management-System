@@ -48,6 +48,7 @@ func main() {
 	var messageHandle Handlers.MessageHandler
 	var cartHandle Handlers.CartHandler
 	var addressHandle Handlers.AddressHandler
+	var orderHandle Handlers.OrderHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
@@ -58,6 +59,7 @@ func main() {
 	messageHandler := messageHandle.NewTMessageHandler(&db, redisService.Auth, tokenInt)
 	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
 	addressHandler := addressHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
+	orderHandler := orderHandle.NewOrderHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
@@ -86,6 +88,12 @@ func main() {
 	{
 		cartGroup.GET("", cartHandler.GetCartHandler)
 		cartGroup.POST("", cartHandler.AddToCartHandler)
+	}
+
+	orderGroup := router.Group("/order")
+	{
+		orderGroup.GET("/all", orderHandler.GetOrderOfAccountHandler)
+		orderGroup.POST("/create", orderHandler.CreateOrderHandler)
 	}
 
 	ticketGroup := router.Group("/ticket")
