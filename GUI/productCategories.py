@@ -1,8 +1,13 @@
 from tkinter import *
+import requests
 from products import showAllProductsInCategory
 
 def showCategories():
-    categories = {}   #{id: name}    TODO: get all categories
+    while True:
+        response = requests.get('http://localhost:8082/category/all')
+        if response.status_code == 200:
+            categories = response.json()  #{id: name}
+            break
 
     categories_screen = Toplevel()
     categories_screen.title("Product Categories")

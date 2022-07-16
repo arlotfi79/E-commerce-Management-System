@@ -1,8 +1,42 @@
 from tkinter import *
 
-def track(orderId):
-    pass
+global addMassage_Screen
 
+def _addMassage(textInput):
+    global addMassage_Screen
+    text = textInput.get()
+     #TODO add massage
+
+    addMassage_Screen.destroy()
+
+
+def addMassage():
+    global addMassage_Screen
+    addMassage_Screen = Toplevel()
+    addMassage_Screen.title("Add new Massage")
+    addMassage_Screen.geometry("300x250")
+
+    text = Text(addMassage_Screen, width=50, height=10)
+    text.pack()
+
+    Label(addMassage_Screen, text="").pack()
+    Button(text="Add", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command= lambda:_addMassage(text)).pack()
+
+
+
+def track(orderId):
+    allMassages = {} #TODO
+
+    track_screen = Toplevel()
+    track_screen.title("Order Tracking")
+    track_screen.geometry("400x500")
+
+    for id in allMassages:
+        Text(track_screen, height=5, width=300, font=("Calibri", 13)).insert('end', allMassages[id])
+
+    Label(track_screen, text="").pack()
+    Button(track_screen, text="Add new massage", width=30, height=2, bg="#0099d8",
+           command= addMassage).pack()
 
 
 def showOrderDetails(orderId):
@@ -22,4 +56,4 @@ def showOrderDetails(orderId):
 
 
     Button(product_screen, text="Track", width=30, height=2, bg="#0099d8",
-           command=lambda: track(orderId)).pack()   ###TODO: track?
+           command=lambda: track(orderId)).pack()
