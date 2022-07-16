@@ -1,10 +1,10 @@
 from tkinter import *
 from review import showReviews
 
-def addToCart(id, details):
+def addToCart(id, details, account_token):
     pass #TODO
 
-def showProductDetails(productId):
+def showProductDetails(productId, account_token):
     details = {}  #TODO: get details by ID
 
     product_screen = Toplevel()
@@ -21,13 +21,13 @@ def showProductDetails(productId):
 
 
     Button(product_screen, text="Add to Cart", width=30, height=2, bg="#0099d8",
-           command=lambda: addToCart(productId, details)).pack()
+           command=lambda: addToCart(productId, details, account_token)).pack()
     Label(product_screen, text="").pack()
-    Button(product_screen, text="reviews", width=30, height=2, bg="#ffffff", command=showReviews).pack()
+    Button(product_screen, text="reviews", width=30, height=2, bg="#ffffff", command=lambda: showReviews(productId, account_token)).pack()
 
 
 
-def showAllProductsInCategory(categoryID, categoryName):
+def showAllProductsInCategory(categoryID, categoryName, account_token):
     products = {} #{id: name} TODO: get all products in a category
 
     all_product_screen = Toplevel()
@@ -38,4 +38,4 @@ def showAllProductsInCategory(categoryID, categoryName):
     Label(all_product_screen, text="").pack()
 
     for p in products.keys():
-        Button(all_product_screen, text= str(products[p]), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p)).pack()
+        Button(all_product_screen, text= str(products[p]), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p, account_token)).pack()

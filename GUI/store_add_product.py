@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import messagebox
 
 import requests
-from store_login import store_account_token
 
 global name
 global color
@@ -12,20 +11,20 @@ global quantity
 
 global product_screen
 
-def _addProduct(catId):
+def _addProduct(catId, account_token):
     response = requests.post('http://localhost:8082/product/addNewProduct', json={
         "name": name.get(),
         "color": color.get().Upper(),
         "price": float(price),
         "weight": float(weight),
         "quantity": int(quantity)
-    }, headers={'Authorization': 'JWT ' + store_account_token})
+    }, headers={'Authorization': 'JWT ' + account_token})
 
     if response.status_code == 200:
         response = requests.post('http://localhost:8082/product/addNewProduct', json = {
         "product_id": 1,  #TODO product id?
         "category_id": catId
-    }, headers={'Authorization': 'JWT ' + store_account_token})
+    }, headers={'Authorization': 'JWT ' + account_token})
 
         if response.status_code == 200:
             global product_screen
@@ -36,7 +35,7 @@ def _addProduct(catId):
 
 
 
-def addProductToCategory(catId):
+def addProductToCategory(catId, account_token):
     global product_screen
 
     product_screen = Toplevel()
@@ -106,9 +105,9 @@ def addProductToCategory(catId):
 
     Label(product_screen, text="").pack()
 
-    Button(product_screen, text="ADD", bg="#0099d8", height="2", width="30", command=lambda: _addProduct(catId)).pack()
+    Button(product_screen, text="ADD", bg="#0099d8", height="2", width="30", command=lambda: _addProduct(catId, account_token)).pack()
 
-def addProduct():
+def addProduct(account_token):
     while True:
         response = requests.get('http://localhost:8082/category/all')
         if response.status_code == 200:
@@ -123,4 +122,4 @@ def addProduct():
     Label(categories_screen, text="").pack()
 
     for c in categories.keys():
-        Button(categories_screen, text=str(categories[c]), width=30, height=2, bg="#0099d8", command=lambda: addProductToCategory(c)).pack()
+        Button(categories_screen, text=str(categories[c]), width=30, height=2, bg="#0099d8", command=lambda: addProductToCategory(c, account_token)).pack()

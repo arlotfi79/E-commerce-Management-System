@@ -5,7 +5,6 @@ import requests
 
 from shoppingCart import showCartProducts
 from orders import showOrderDetails
-from login import account_token
 
 global firstName
 global lastName
@@ -14,11 +13,13 @@ global phoneNumber
 
 global addAddres_screen
 
-def showNotifications():
+
+def showNotifications(accont_token):
     pass
     #TODO
 
-def submitChanges():
+
+def submitChanges(account_token):
     fname = firstName.get()
     lname = lastName.get()
     mail = email.get()
@@ -26,7 +27,8 @@ def submitChanges():
 
     #TODO: edit info
 
-def editInfo():
+
+def editInfo(account_token):
     edit_screen = Toplevel()
     edit_screen.title("Register")
     edit_screen.geometry("400x550")
@@ -88,10 +90,10 @@ def editInfo():
 
     # Set register button
     Button(edit_screen, text="Submit", bg="#0099d8", height="2", width="30",
-           command=submitChanges).pack()
+           command=lambda: submitChanges(account_token)).pack()
 
 
-def showOrders():
+def showOrders(account_token):
     while True:
         response = requests.get('http://localhost:8082/', headers={'Authorization': 'JWT ' + account_token}) #TODO Complete
         if response.status_code == 200:
@@ -107,11 +109,11 @@ def showOrders():
 
     for item in orders.keys():
         Button(order_screen, text=orders[item], width=300, height=5, font=("Calibri", 13),
-               command=lambda: showOrderDetails(item)).pack()
+               command=lambda: showOrderDetails(item, account_token)).pack()
 
 
 
-def submitAddress(country, city, street, plaque):
+def submitAddress(country, city, street, plaque, account_token):
     response = requests.post('http://localhost:8082/address/addNew', json = {"country": country,
             "city": city,
             "street": street,
@@ -126,7 +128,7 @@ def submitAddress(country, city, street, plaque):
         messagebox.showerror("err", "Please try again!")
 
 
-def addAddress():
+def addAddress(account_token):
     global addAddres_screen
     addAddres_screen = Toplevel()
     addAddres_screen.title("profile")
@@ -182,10 +184,10 @@ def addAddress():
     plaque_entry.pack()
 
     Label(addAddres_screen, text="").pack()
-    Button(addAddres_screen, text="Add", width=30, height=2, bg="#0099d8", command=lambda: submitAddress(country.get(), city.get(), street.get(), plaque.get())).pack()
+    Button(addAddres_screen, text="Add", width=30, height=2, bg="#0099d8", command=lambda: submitAddress(country.get(), city.get(), street.get(), plaque.get(), account_token)).pack()
 
 
-def showAllAddress():
+def showAllAddress(account_token):
     while True:
         response = requests.get('http://localhost:8082/address/getAddresses', headers={'Authorization': 'JWT ' + account_token})
         if response.status_code == 200:
@@ -203,12 +205,51 @@ def showAllAddress():
         Text(address_screen, height=5, width=300, font=("Calibri", 13)).insert('end', addresses[m])
 
     Label(address_screen, text="").pack()
-    Button(text="Add new Address", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=addAddress).pack()
+    Button(text="Add new Address", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=lambda: addAddress(account_token)).pack()
 
-def showWhatchList():
-    pass #TODO show watch list
 
-def openProfile():
+def showProductDetails(product, account_token):
+    details = product
+
+    product_screen = Toplevel()
+    product_screen.title("Product Details")
+    product_screen.geometry("400x500")
+
+    Label(product_screen, text="Product Details", bg="#0099d8", width="300", height="2", font=("Calibri", 13)).pack()
+    Label(product_screen, text="").pack()
+
+    for info in details.keys():
+        Label(product_screen, text = str(info) + " :", font=("Calibri", 13)).pack()
+        Label(product_screen, text= str(details[info])).pack()
+        Label(product_screen,text="").pack()
+
+
+    Button(product_screen, text="Remove", width=30, height=2, bg="#0099d8",
+           command=lambda: removeFromWatchlist(product["id"], account_token)).pack()
+
+
+
+def showWhatchList(account_token):
+    while True:
+        response = requests.get('http://localhost:8082/product/watchlist', headers={'Authorization': 'JWT ' + account_token})
+        if response.status_code == 200:
+            watchList = response
+            break
+
+    global watchList_screen
+    watchList_screen = Toplevel()
+    watchList_screen.title("Shopping Cart")
+    watchList_screen.geometry("400x600")
+
+    Label(watchList_screen, text="Shopping Cart", font=("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
+    Label(watchList_screen, text="").pack()
+
+    for p in watchList:
+        Button(watchList_screen, text=p["name"] + p["color"], width=300, height=5, font=("Calibri", 13),
+               command=lambda: showProductDetails(p, account_token)).pack()
+
+
+def openProfile(token):
     profile_screen = Toplevel()
     profile_screen.title("profile")
     profile_screen.geometry("400x300")
@@ -216,9 +257,9 @@ def openProfile():
     Label(profile_screen, text="profile", font = ("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
     Label(profile_screen, text="").pack()
 
-    Button(profile_screen, text="Edit Info", width=30, height=2, bg="#0099d8", command=editInfo).pack()
-    Button(profile_screen, text="My orders", width=30, height=2, bg="#0099d8", command=showOrders).pack()
-    Button(profile_screen, text="Add address", width=30, height=2, bg="#0099d8", command=showAllAddress).pack()
-    Button(profile_screen, text="Shopping Cart", width=30, height=2, bg="#0099d8", command=showCartProducts).pack()
-    Button(profile_screen, text="Notifications", width=30, height=2, bg="#0099d8", command=showNotifications).pack()
-    Button(profile_screen, text="Watch list", width=30, height=2, bg="#0099d8", command=showWhatchList).pack()
+    Button(profile_screen, text="Edit Info", width=30, height=2, bg="#0099d8", command=lambda: editInfo(token)).pack()
+    Button(profile_screen, text="My orders", width=30, height=2, bg="#0099d8", command=lambda: showOrders(token)).pack()
+    Button(profile_screen, text="Add address", width=30, height=2, bg="#0099d8", command=lambda: showAllAddress(token)).pack()
+    Button(profile_screen, text="Shopping Cart", width=30, height=2, bg="#0099d8", command=lambda: showCartProducts(token)).pack()
+    Button(profile_screen, text="Notifications", width=30, height=2, bg="#0099d8", command=lambda: showNotifications(token)).pack()
+    Button(profile_screen, text="Watch list", width=30, height=2, bg="#0099d8", command=lambda: showWhatchList(token)).pack()
