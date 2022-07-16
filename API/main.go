@@ -85,7 +85,8 @@ func main() {
 	productReviewGroup := router.Group("/productReview")
 	{
 		productReviewGroup.GET("", reviewHandler.GetReviewsWithVotesByProductIDHandler)
-		productReviewGroup.POST("", reviewHandler.PostReviewHandler)
+		productReviewGroup.POST("/add", reviewHandler.PostReviewHandler)
+		cartGroup.POST("/remove", cartHandler.RemoveFromCartHandler)
 	}
 
 	replyReviewGroup := router.Group("/reviewReply")
