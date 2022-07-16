@@ -75,3 +75,26 @@ func (productHandler *ProductHandler) AddNewProductHandler(c *gin.Context) {
 		}
 	}
 }
+
+func (productHandler *ProductHandler) AddProductToCategoryHandler(c *gin.Context) {
+	_, err := productHandler.tokenInterface.ExtractTokenMetadata(c.Request)
+
+	if err == nil {
+		var productCategry DataSignatures.PostProductCategory
+		if err := c.ShouldBindJSON(&productCategry); err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
+				"err": "invalid json",
+			})
+			return
+		}
+
+		reviewq := q.NewProductQuery(productHandler.dbClient)
+
+		err := reviewq.AddProductToCategory(&productCategry)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+	}
+}

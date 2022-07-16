@@ -445,3 +445,23 @@ func (productQuery *ProductQuery) AddNewProduct(product *DataSignatures.PostProd
 
 	return nil
 }
+
+func (productQuery *ProductQuery) AddProductToCategory(productCategory *DataSignatures.PostProductCategory) error {
+	db := productQuery.dbClient.GetDB()
+	query, err := db.Prepare(`INSERT INTO Product_Category (product_id, category_id)
+									VALUES ($1, $2)`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	_, err = query.Exec(productCategory.ProductID, productCategory.CategoryID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

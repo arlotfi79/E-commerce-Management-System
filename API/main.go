@@ -61,12 +61,16 @@ func main() {
 	router.POST("/signin", accountHandler.SigninHandler)
 	router.GET("/profile", accountHandler.ProfileHandler)
 
-	router.GET("/category", categHandler.GetAllCategoriesHandler)
+	categoryGroup := router.Group("category")
+	{
+		categoryGroup.GET("/all", categHandler.GetAllCategoriesHandler)
+	}
 
 	productGroup := router.Group("product")
 	{
 		productGroup.GET("/byCategory", prodHandler.ProductByCategoryNameHandler)
-		productGroup.POST("/add", prodHandler.AddNewProductHandler)
+		productGroup.POST("/addNewProduct", prodHandler.AddNewProductHandler)
+		productGroup.POST("/addToCategory", prodHandler.AddProductToCategoryHandler)
 	}
 
 	cartGroup := router.Group("/cart")
