@@ -1,5 +1,5 @@
 from tkinter import *
 
 
-def editInfo():
+def editInfo(account_token):
     pass

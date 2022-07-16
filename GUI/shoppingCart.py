@@ -4,7 +4,7 @@ from products import showProductDetails
 global cart_screen
 
 
-def order():
+def order(account_token):
     global cart_screen
     cart_screen.destroy()
 
@@ -12,7 +12,7 @@ def order():
 
 
 
-def showCartProducts():
+def showCartProducts(account_token):
     cart = {} #TODO
 
     global cart_screen
@@ -28,4 +28,4 @@ def showCartProducts():
 
 
     Label(cart_screen, text="").pack()
-    Button(text="Order", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=order).pack()
+    Button(text="Order", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=lambda: order(account_token)).pack()

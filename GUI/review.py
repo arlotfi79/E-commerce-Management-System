@@ -5,7 +5,7 @@ global massage_Screen
 global addreview_Screen
 global review_screen
 
-def _addReview(subjectInput, textInput):
+def _addReview(subjectInput, textInput, account_token):
     global addreview_Screen
     global review_screen
 
@@ -18,7 +18,7 @@ def _addReview(subjectInput, textInput):
     review_screen.destroy()
 
 
-def addReview(productId):
+def addReview(productId, account_token):
     addreview_Screen = Toplevel()
     addreview_Screen.title("Add new Review")
     addreview_Screen.geometry("300x250")
@@ -33,11 +33,11 @@ def addReview(productId):
     text.pack()
 
     Label(addreview_Screen, text="").pack()
-    Button(text="Add", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command= lambda:_addReview(subject, text)).pack()
+    Button(text="Add", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command= lambda:_addReview(subject, text, account_token)).pack()
 
 
 
-def _addMassage(textInput):
+def _addMassage(textInput, account_token):
     global addMassage_Screen
     global massage_Screen
     text = textInput.get()
@@ -48,7 +48,7 @@ def _addMassage(textInput):
     massage_Screen.destroy()
 
 
-def addMassage():
+def addMassage(account_token):
     global addMassage_Screen
 
     addMassage_Screen = Toplevel()
@@ -59,16 +59,16 @@ def addMassage():
     text.pack()
 
     Label(addMassage_Screen, text="").pack()
-    Button(text="Add", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command= lambda:_addMassage(text)).pack()
+    Button(text="Add", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command= lambda:_addMassage(text, account_token)).pack()
 
 
-def upVote(reviewId):
+def upVote(reviewId, account_token):
     pass
 
-def downVote(reviewId):
+def downVote(reviewId, account_token):
     pass
 
-def showMassages(reviewId):
+def showMassages(reviewId, account_token):
     global massage_Screen
 
     massages = {}  #{id: text} TODO: get massages
@@ -84,13 +84,13 @@ def showMassages(reviewId):
         Text(massage_Screen, height=5, width=300, font=("Calibri", 13)).insert('end', massages[m])
 
     Label(massage_Screen, text="").pack()
-    Button(text="Add massage", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=addMassage).pack()
-    Button(text="UpVote", bg="#018600", height="2", width="30", font=("Calibri", 13), command=lambda: upVote(reviewId)).pack()
-    Button(text="DownVote", bg="#c10100", height="2", width="30", font=("Calibri", 13), command=lambda: downVote(reviewId)).pack()
+    Button(text="Add massage", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=lambda: addMassage(account_token)).pack()
+    Button(text="UpVote", bg="#018600", height="2", width="30", font=("Calibri", 13), command=lambda: upVote(reviewId, account_token)).pack()
+    Button(text="DownVote", bg="#c10100", height="2", width="30", font=("Calibri", 13), command=lambda: downVote(reviewId, account_token)).pack()
 
 
 
-def showReviews(productID):
+def showReviews(productID, account_token):
     reviews = {}  #{id: subject}  TODO: get rewiews
 
     review_screen = Toplevel()

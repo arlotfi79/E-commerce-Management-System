@@ -1,11 +1,10 @@
 from tkinter import *
 import requests
 from products import showAllProductsInCategory
-from login import account_token
 
-def showCategories():
+def showCategories(token):
     while True:
-        response = requests.get('http://localhost:8082/category/all', headers={'Authorization': 'JWT ' + account_token})
+        response = requests.get('http://localhost:8082/category/all', headers={'Authorization': 'JWT ' + token})
         if response.status_code == 200:
             categories = response.json()  #{id: name}
             break

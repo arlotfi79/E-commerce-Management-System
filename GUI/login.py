@@ -6,7 +6,6 @@ import requests
 
 global username_verify
 global password_verify
-global account_token
 global login_screen
 
 def login_verification(mainScreen):
@@ -19,10 +18,9 @@ def login_verification(mainScreen):
     })
 
     if response.status_code == 200:
-        global account_token
         account_token = response.json()['access_token']
         login_screen.destroy()
-        main_account_screen(mainScreen)
+        main_account_screen(mainScreen, account_token)
     else:
         messagebox.showerror("err", "Please try again!")
 
