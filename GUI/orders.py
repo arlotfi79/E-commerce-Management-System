@@ -8,6 +8,7 @@ def _addMassage(textInput, account_token):
      #TODO add massage
 
     addMassage_Screen.destroy()
+    addMassage_Screen.update()
 
 
 def addMassage(account_token):

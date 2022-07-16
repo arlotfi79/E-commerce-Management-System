@@ -18,18 +18,19 @@ def _addProduct(catId, account_token):
         "price": float(price),
         "weight": float(weight),
         "quantity": int(quantity)
-    }, headers={'Authorization': 'JWT ' + account_token})
+    }, headers={'Authorization': 'Bearer ' + account_token})
 
     if response.status_code == 200:
         response = requests.post('http://localhost:8082/product/addNewProduct', json = {
         "product_id": 1,  #TODO product id?
         "category_id": catId
-    }, headers={'Authorization': 'JWT ' + account_token})
+    }, headers={'Authorization': 'Bearer ' + account_token})
 
         if response.status_code == 200:
             global product_screen
             messagebox.showinfo("add product", "Added Successfully")
             product_screen.destroy()
+            product_screen.update()
         else:
             messagebox.showerror("err", "Please try again!")
 
@@ -111,7 +112,7 @@ def addProduct(account_token):
     while True:
         response = requests.get('http://localhost:8082/category/all')
         if response.status_code == 200:
-            categories = response.json()  # {id: name}
+            categories = response
             break
 
     categories_screen = Toplevel()
@@ -121,5 +122,7 @@ def addProduct(account_token):
     Label(categories_screen, text="Select Category", font = ("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
     Label(categories_screen, text="").pack()
 
-    for c in categories.keys():
-        Button(categories_screen, text=str(categories[c]), width=30, height=2, bg="#0099d8", command=lambda: addProductToCategory(c, account_token)).pack()
+    for cat in categories:
+        cat_id = cat.json().keys()[0]
+        name = cat.json().values()[1]
+        Button(categories_screen, text=str(name), width=30, height=2, bg="#0099d8", command=lambda: addProductToCategory(cat_id, account_token)).pack()

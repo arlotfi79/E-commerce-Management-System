@@ -15,7 +15,9 @@ def _addReview(subjectInput, textInput, account_token):
     #TODO: add review
 
     addreview_Screen.destroy()
+    addreview_Screen.update()
     review_screen.destroy()
+    review_screen.update()
 
 
 def addReview(productId, account_token):
@@ -45,7 +47,9 @@ def _addMassage(textInput, account_token):
     #TODO: add massage
 
     addMassage_Screen.destroy()
+    addMassage_Screen.update()
     massage_Screen.destroy()
+    massage_Screen.update()
 
 
 def addMassage(account_token):

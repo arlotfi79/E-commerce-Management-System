@@ -1,11 +1,18 @@
 from tkinter import *
+from tkinter import messagebox
+
+import requests
+
 from review import showReviews
 
-def addToCart(id, details, account_token):
-    pass #TODO
+def addToCart(id, account_token):
+    response = requests.post('http://localhost:8082/cart', json = {"productId": id, "productCount": 1}, headers={'Authorization': 'Bearer ' + account_token})
+    if response.status_code == 200:
+        messagebox.showinfo("Add To cart", "Added Successfully")
 
-def showProductDetails(productId, account_token):
-    details = {}  #TODO: get details by ID
+
+def showProductDetails(productDetails, account_token):
+    details = productDetails
 
     product_screen = Toplevel()
     product_screen.title("Product Details")
@@ -21,14 +28,18 @@ def showProductDetails(productId, account_token):
 
 
     Button(product_screen, text="Add to Cart", width=30, height=2, bg="#0099d8",
-           command=lambda: addToCart(productId, details, account_token)).pack()
+           command=lambda: addToCart(productDetails["id"], account_token)).pack()
     Label(product_screen, text="").pack()
-    Button(product_screen, text="reviews", width=30, height=2, bg="#ffffff", command=lambda: showReviews(productId, account_token)).pack()
+    Button(product_screen, text="reviews", width=30, height=2, bg="#ffffff", command=lambda: showReviews(productDetails["id"], account_token)).pack()
 
 
 
 def showAllProductsInCategory(categoryID, categoryName, account_token):
-    products = {} #{id: name} TODO: get all products in a category
+    while True:
+        response = requests.get('http://localhost:8082/product/byCategory', json={"name" : categoryName} , headers={'Authorization': 'Bearer ' + account_token})
+        if response.status_code == 200:
+            products = response
+            break
 
     all_product_screen = Toplevel()
     all_product_screen.title(categoryName)
@@ -37,5 +48,6 @@ def showAllProductsInCategory(categoryID, categoryName, account_token):
     Label(all_product_screen, text=categoryName, font=("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
     Label(all_product_screen, text="").pack()
 
-    for p in products.keys():
-        Button(all_product_screen, text= str(products[p]), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p, account_token)).pack()
+    for p in products:
+        name = p.json()["name"]
+        Button(all_product_screen, text= str(name), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p, account_token)).pack()

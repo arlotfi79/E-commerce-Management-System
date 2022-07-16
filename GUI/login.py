@@ -20,12 +20,14 @@ def login_verification(mainScreen):
     if response.status_code == 200:
         account_token = response.json()['access_token']
         login_screen.destroy()
+        login_screen.update()
         main_account_screen(mainScreen, account_token)
     else:
         messagebox.showerror("err", "Please try again!")
 
 
 def login(mainScreen):
+    global login_screen
     login_screen = Toplevel()
     login_screen.title("Login")
     login_screen.geometry("400x300")

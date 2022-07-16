@@ -16,7 +16,7 @@ def logIn_screen():
     Button(text="Login", height="2", width="30", command=lambda: login(main_screen)).pack()
     Label(text="").pack()
 
-    Button(text="Register", bg="#0099d8", height="2", width="30", command=lambda: register(main_screen)).pack()
+    Button(text="Register", bg="#0099d8", height="2", width="30", command=lambda: register()).pack()
     Label(text="").pack()
     Label(text="").pack()
 
@@ -26,7 +26,7 @@ def logIn_screen():
     Button(text="Login", height="2", width="30", command=lambda: store_login(main_screen)).pack()
     Label(text="").pack()
 
-    Button(text="Register", bg="#0099d8", height="2", width="30", command=lambda: register_store(main_screen)).pack()
+    Button(text="Register", bg="#0099d8", height="2", width="30", command=lambda: register_store()).pack()
 
     main_screen.mainloop()
 
