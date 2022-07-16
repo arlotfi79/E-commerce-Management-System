@@ -3,6 +3,7 @@ from productCategories import showCategories
 from profile import openProfile
 
 def main_account_screen(mainScreen, token):
+    mainScreen.destroy()
     main_screen = Tk()
     main_screen.title("E-commerce Management System")
     main_screen.geometry("500x350")
