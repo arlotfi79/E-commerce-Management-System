@@ -50,7 +50,7 @@ func main() {
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db)
-	prodHandler := prodHandle.NewProductHandler(&db)
+	prodHandler := prodHandle.NewProductHandler(&db, redisService.Auth, tokenInt)
 	reviewHandler := reviewHandle.NewReviewHandler(&db, redisService.Auth, tokenInt)
 	replyHandler := replyHandle.NewReplyHandler(&db, redisService.Auth, tokenInt)
 	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
@@ -62,7 +62,12 @@ func main() {
 	router.GET("/profile", accountHandler.ProfileHandler)
 
 	router.GET("/category", categHandler.GetAllCategoriesHandler)
-	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
+
+	productGroup := router.Group("product")
+	{
+		productGroup.GET("/byCategory", prodHandler.ProductByCategoryNameHandler)
+		productGroup.POST("/add", prodHandler.AddNewProductHandler)
+	}
 
 	cartGroup := router.Group("/cart")
 	{

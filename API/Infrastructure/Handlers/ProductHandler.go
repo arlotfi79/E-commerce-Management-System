@@ -1,24 +1,27 @@
 package Handlers
 
 import (
-	"API/Database"
 	"API/Communication/DataSignatures"
+	"API/Database"
 	q "API/Infrastructure/Queries"
+	"API/Infrastructure/auth"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"github.com/gin-gonic/gin"
 )
 
 type ProductHandler struct {
-	dbClient *Database.Postgresql
+	dbClient       *Database.Postgresql
+	authInterface  auth.AuthInterface
+	tokenInterface auth.TokenInterface
 }
 
-func (productHandler *ProductHandler) NewProductHandler(dbClient *Database.Postgresql) *ProductHandler {
-	return &ProductHandler{dbClient: dbClient}
+func (productHandler *ProductHandler) NewProductHandler(dbClient *Database.Postgresql, authInt auth.AuthInterface, tokenInt auth.TokenInterface) *ProductHandler {
+	return &ProductHandler{dbClient: dbClient, authInterface: authInt, tokenInterface: tokenInt}
 }
 
 func (productHandler *ProductHandler) ProductByCategoryNameHandler(c *gin.Context) {
-	var categ DataSignatures.PostCategory
+	var categ DataSignatures.GetCategory
 	if err := c.ShouldBindJSON(&categ); err != nil {
 		log.Fatal(err)
 		c.JSON(http.StatusUnprocessableEntity, gin.H{
@@ -48,4 +51,27 @@ func (productHandler *ProductHandler) ProductByCategoryNameHandler(c *gin.Contex
 
 	c.JSON(http.StatusOK, response)
 
+}
+
+func (productHandler *ProductHandler) AddNewProductHandler(c *gin.Context) {
+	_, err := productHandler.tokenInterface.ExtractTokenMetadata(c.Request)
+
+	if err == nil {
+		var product DataSignatures.PostProduct
+		if err := c.ShouldBindJSON(&product); err != nil {
+			log.Fatal(err)
+			c.JSON(http.StatusUnprocessableEntity, gin.H{
+				"err": "invalid json",
+			})
+			return
+		}
+
+		reviewq := q.NewProductQuery(productHandler.dbClient)
+
+		err := reviewq.AddNewProduct(&product)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+	}
 }
