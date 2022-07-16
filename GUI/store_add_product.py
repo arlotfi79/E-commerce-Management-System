@@ -21,10 +21,7 @@ def _addProduct(catId, account_token):
     }, headers={'Authorization': 'Bearer ' + account_token})
 
     if response.status_code == 200:
-        response = requests.post('http://localhost:8082/product/addNewProduct', json = {
-        "product_id": 1,  #TODO product id?
-        "category_id": catId
-    }, headers={'Authorization': 'Bearer ' + account_token})
+        response = requests.post('http://localhost:8082/product/addNewProduct', json = {"category_id": catId}, headers={'Authorization': 'Bearer ' + account_token})
 
         if response.status_code == 200:
             global product_screen
@@ -112,7 +109,7 @@ def addProduct(account_token):
     while True:
         response = requests.get('http://localhost:8082/category/all')
         if response.status_code == 200:
-            categories = response
+            categories = response.json()
             break
 
     categories_screen = Toplevel()

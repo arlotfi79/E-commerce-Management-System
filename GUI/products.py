@@ -11,7 +11,7 @@ def addToCart(id, account_token):
         messagebox.showinfo("Add To cart", "Added Successfully")
 
 
-def showProductDetails(productDetails, account_token):
+def showProductDetails(productDetails, categoryName, account_token):
     details = productDetails
 
     product_screen = Toplevel()
@@ -32,13 +32,28 @@ def showProductDetails(productDetails, account_token):
     Label(product_screen, text="").pack()
     Button(product_screen, text="reviews", width=30, height=2, bg="#ffffff", command=lambda: showReviews(productDetails["id"], account_token)).pack()
 
+    Label(product_screen, text="").pack()
+    Label(product_screen, text="").pack()
+    Label(product_screen, text="").pack()
+    Label(product_screen, text="").pack()
+    while True:
+        response = requests.get('http://localhost:8082/product/byCategory', json={"name" : categoryName} , headers={'Authorization': 'Bearer ' + account_token})
+        if response.status_code == 200:
+            products = response.json()
+            break
+
+    for p in range(0, len(products), 2):
+        name = products[p].json()["name"]
+        Button(product_screen, text= str(name), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p,categoryName, account_token)).pack()
+
+
 
 
 def showAllProductsInCategory(categoryID, categoryName, account_token):
     while True:
         response = requests.get('http://localhost:8082/product/byCategory', json={"name" : categoryName} , headers={'Authorization': 'Bearer ' + account_token})
         if response.status_code == 200:
-            products = response
+            products = response.json()
             break
 
     all_product_screen = Toplevel()
@@ -50,4 +65,8 @@ def showAllProductsInCategory(categoryID, categoryName, account_token):
 
     for p in products:
         name = p.json()["name"]
-        Button(all_product_screen, text= str(name), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p, account_token)).pack()
+        Button(all_product_screen, text= str(name), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p,categoryName, account_token)).pack()
+
+
+
+

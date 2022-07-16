@@ -23,7 +23,7 @@ def showNotifications(account_token):
 
     response = requests.get('http://localhost:8082/notif', headers={'Authorization': 'Bearer ' + account_token})
     if response.status_code == 200:
-        notifs = response
+        notifs = response.json()
         for m in notifs:
             temp = m.json()
             Text(notif_screen, height=5, width=300, font=("Calibri", 13)).insert('end', temp["description"])
@@ -33,7 +33,7 @@ def showOrders(account_token):
     while True:
         response = requests.get('http://localhost:8082/order/all', headers={'Authorization': 'Bearer ' + account_token})
         if response.status_code == 200:
-            listOforders = response
+            listOforders = response.json()
             break
 
     order_screen = Toplevel()
@@ -174,7 +174,7 @@ def showWhatchList(account_token):
     while True:
         response = requests.get('http://localhost:8082/product/watchlist', headers={'Authorization': 'Bearer ' + account_token})
         if response.status_code == 200:
-            watchList = response
+            watchList = response.json()
             break
 
     global watchList_screen
