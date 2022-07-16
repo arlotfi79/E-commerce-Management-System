@@ -69,10 +69,10 @@ def addMassage(account_token):
 
 
 def upVote(reviewId, account_token):
-    pass
+    response = requests.post('http://localhost:8082/productReview/upvote ', json= {"reviewId": reviewId}, headers={'Authorization': 'Bearer ' + account_token} )
 
 def downVote(reviewId, account_token):
-    pass
+    response = requests.post('http://localhost:8082/productReview/downvote  ', json= {"reviewId": reviewId}, headers={'Authorization': 'Bearer ' + account_token} )
 
 def showMassages(reviewId, account_token):
     global massage_Screen
