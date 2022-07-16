@@ -1,12 +1,21 @@
 package DataSignatures
 
-type GetProduct struct {
-	Id       uint64  `json:"id"`
+type PostProduct struct {
 	Name     string  `json:"name"`
 	Color    string  `json:"color"`
 	Price    float64 `json:"price"`
 	Weight   float64 `json:"weight"`
 	Quantity uint64  `json:"quantity"`
+}
+
+type PostProductCategory struct {
+	ProductID  uint64 `json:"product_id"`
+	CategoryID uint64 `json:"category_id"`
+}
+
+type GetProduct struct {
+	Id uint64 `json:"id"`
+	PostProduct
 }
 
 type GetProductFromCart struct {

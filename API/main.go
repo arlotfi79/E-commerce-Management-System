@@ -42,24 +42,45 @@ func main() {
 	var accHandle Handlers.AccountHandler
 	var categHandle Handlers.CategoryHandler
 	var prodHandle Handlers.ProductHandler
+	var reviewHandle Handlers.ReviewHandler
+	var replyHandle Handlers.ReplyHandler
 	var tickHandle Handlers.TicketHandler
 	var messageHandle Handlers.MessageHandler
 	var cartHandle Handlers.CartHandler
-
+	var addressHandle Handlers.AddressHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
-	categHandler := categHandle.NewCategoryHandler(&db)
-	prodHandler := prodHandle.NewProductHandler(&db)
+	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
+	prodHandler := prodHandle.NewProductHandler(&db, redisService.Auth, tokenInt)
+	reviewHandler := reviewHandle.NewReviewHandler(&db, redisService.Auth, tokenInt)
+	replyHandler := replyHandle.NewReplyHandler(&db, redisService.Auth, tokenInt)
 	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
 	messageHandler := messageHandle.NewTMessageHandler(&db, redisService.Auth, tokenInt)
 	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
+	addressHandler := addressHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
 	router.GET("/profile", accountHandler.ProfileHandler)
 
-	router.GET("/category", categHandler.GetAllCategoriesHandler)
-	router.POST("/product", prodHandler.ProductByCategoryNameHandler)
+	categoryGroup := router.Group("/category")
+	{
+		categoryGroup.GET("/all", categHandler.GetAllCategoriesHandler)
+		categoryGroup.POST("/addNew", categHandler.AddNewCategoryHandler)
+	}
+
+	addressGroup := router.Group("/address")
+	{
+		addressGroup.POST("/addNew", addressHandler.AddAddressToAccount)
+		addressGroup.GET("/getAddresses", addressHandler.GetAddressByAccountID)
+	}
+
+	productGroup := router.Group("/product")
+	{
+		productGroup.GET("/byCategory", prodHandler.ProductByCategoryNameHandler)
+		productGroup.POST("/addNewProduct", prodHandler.AddNewProductHandler)
+		productGroup.POST("/addToCategory", prodHandler.AddProductToCategoryHandler)
+	}
 
 	cartGroup := router.Group("/cart")
 	{
@@ -72,11 +93,24 @@ func main() {
 		ticketGroup.GET("", tickHandler.GetTicketsByOrderIDHandler)
 		ticketGroup.POST("", tickHandler.PostTicketHandler)
 	}
-	
+
 	messageGroup := router.Group("/message")
 	{
 		messageGroup.GET("", messageHandler.GetMessagesByTicketIDHandler)
 		messageGroup.POST("", messageHandler.PostMessageHandler)
+	}
+
+	productReviewGroup := router.Group("/productReview")
+	{
+		productReviewGroup.GET("", reviewHandler.GetReviewsWithVotesByProductIDHandler)
+		productReviewGroup.POST("/add", reviewHandler.PostReviewHandler)
+		cartGroup.POST("/remove", cartHandler.RemoveFromCartHandler)
+	}
+
+	replyReviewGroup := router.Group("/reviewReply")
+	{
+		replyReviewGroup.GET("", replyHandler.GetRepliesUsingReviewID)
+		replyReviewGroup.POST("", replyHandler.PostReply)
 	}
 
 	err = router.Run(":8081")

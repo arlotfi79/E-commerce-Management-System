@@ -5,6 +5,6 @@ type Category struct {
 	Name string `json:"name"`
 }
 
-type PostCategory struct {
+type GetCategory struct {
 	Name string `json:"name"`
 }

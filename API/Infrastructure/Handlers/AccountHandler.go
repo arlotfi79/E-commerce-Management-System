@@ -5,16 +5,16 @@ import (
 	"API/Database"
 	pwd "API/Infrastructure/PasswordSecurity"
 	q "API/Infrastructure/Queries"
-	// "log"
-	"net/http"
 	"API/Infrastructure/auth"
 	"github.com/gin-gonic/gin"
+	// "log"
+	"net/http"
 )
 
 type AccountHandler struct {
-	dbClient *Database.Postgresql
-	authInterface          auth.AuthInterface
-	tokenInterface         auth.TokenInterface
+	dbClient       *Database.Postgresql
+	authInterface  auth.AuthInterface
+	tokenInterface auth.TokenInterface
 }
 
 func (accountHandler *AccountHandler) NewAccountHandler(dbClient *Database.Postgresql, authInt auth.AuthInterface, tokenInt auth.TokenInterface) *AccountHandler {
@@ -99,21 +99,20 @@ func (accountHandler *AccountHandler) SigninHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, userData)
 
-
 }
 
 func (accountHandler *AccountHandler) ProfileHandler(c *gin.Context) {
 	userq := q.NewUserQuery(accountHandler.dbClient)
 	var user []DataSignatures.GetAccount
 	accessInfo, err := accountHandler.tokenInterface.ExtractTokenMetadata(c.Request)
-  if err == nil {
-  	user, err = userq.GetUserById(accessInfo.UserId)
+	if err == nil {
+		user, err = userq.GetUserById(accessInfo.UserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, err)
 			return
 		}
 		c.JSON(http.StatusOK, user[0])
-		return 
+		return
 	} else {
 		c.JSON(http.StatusUnauthorized, "Unauthorized")
 		return
