@@ -24,7 +24,7 @@ func (ticketHandler *TicketHandler) GetTicketsByOrderIDHandler(c *gin.Context) {
 	_, err := ticketHandler.tokenInterface.ExtractTokenMetadata(c.Request)
 
 	if err == nil {
-		var order DataSignatures.GetOrder
+		var order DataSignatures.GetOrderTickets
 		if err := c.ShouldBindJSON(&order); err != nil {
 			log.Fatal(err)
 			c.JSON(http.StatusUnprocessableEntity, gin.H{
