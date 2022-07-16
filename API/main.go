@@ -50,6 +50,7 @@ func main() {
 	var addressHandle Handlers.AddressHandler
 	var orderHandle Handlers.OrderHandler
 	var watchListHandle Handlers.WatchListHandler
+	var NotificationHandle Handlers.NotificationHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
@@ -62,6 +63,8 @@ func main() {
 	addressHandler := addressHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
 	orderHandler := orderHandle.NewOrderHandler(&db, redisService.Auth, tokenInt)
 	watchListHandler := watchListHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
+	NotificationHandler := NotificationHandle.NewNotificationHandler(&db, redisService.Auth, tokenInt)
+
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
@@ -129,7 +132,9 @@ func main() {
 		replyReviewGroup.GET("", replyHandler.GetRepliesUsingReviewID)
 		replyReviewGroup.POST("", replyHandler.PostReply)
 	}
-
+	
+	router.GET("/notif", NotificationHandler.GetNotificationsHandler)
+	
 	err = router.Run(":8081")
 	if err != nil {
 		return
