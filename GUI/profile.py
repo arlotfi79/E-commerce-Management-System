@@ -95,7 +95,7 @@ def showOrders():
     while True:
         response = requests.get('http://localhost:8082/', headers={'Authorization': 'JWT ' + account_token}) #TODO Complete
         if response.status_code == 200:
-            orders = response.json()  #{id: name} #TODO che sheklie?
+            orders = response.json()  #{id: name} #TODO: che sheklie?
             break
 
     order_screen = Toplevel()
@@ -205,7 +205,8 @@ def showAllAddress():
     Label(address_screen, text="").pack()
     Button(text="Add new Address", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=addAddress).pack()
 
-
+def showWhatchList():
+    pass #TODO show watch list
 
 def openProfile():
     profile_screen = Toplevel()
@@ -220,3 +221,4 @@ def openProfile():
     Button(profile_screen, text="Add address", width=30, height=2, bg="#0099d8", command=showAllAddress).pack()
     Button(profile_screen, text="Shopping Cart", width=30, height=2, bg="#0099d8", command=showCartProducts).pack()
     Button(profile_screen, text="Notifications", width=30, height=2, bg="#0099d8", command=showNotifications).pack()
+    Button(profile_screen, text="Watch list", width=30, height=2, bg="#0099d8", command=showWhatchList).pack()
