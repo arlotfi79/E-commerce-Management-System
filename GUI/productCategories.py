@@ -16,5 +16,5 @@ def showCategories(token):
     Label(categories_screen, text="All Product Categories", font = ("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
     Label(categories_screen, text="").pack()
 
-    for c in categories.keys():
-        Button(categories_screen, text=str(categories[c]), width=30, height=2, bg="#0099d8", command=lambda: showAllProductsInCategory(c, categories[c], token)).pack()
+    for c in categories:
+        Button(categories_screen, text=str(c["name"]), width=30, height=2, bg="#0099d8", command=lambda: showAllProductsInCategory(c["id"], c["name"], token)).pack()
