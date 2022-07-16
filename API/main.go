@@ -51,6 +51,7 @@ func main() {
 	var orderHandle Handlers.OrderHandler
 	var watchListHandle Handlers.WatchListHandler
 	var NotificationHandle Handlers.NotificationHandler
+	var ReactionHandle Handlers.ReactiontHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
@@ -63,8 +64,8 @@ func main() {
 	addressHandler := addressHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
 	orderHandler := orderHandle.NewOrderHandler(&db, redisService.Auth, tokenInt)
 	watchListHandler := watchListHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
-	NotificationHandler := NotificationHandle.NewNotificationHandler(&db, redisService.Auth, tokenInt)
-
+	notificationHandler := NotificationHandle.NewNotificationHandler(&db, redisService.Auth, tokenInt)
+	reactiontHandler := ReactionHandle.NewReactiontHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
@@ -124,7 +125,10 @@ func main() {
 	{
 		productReviewGroup.GET("", reviewHandler.GetReviewsWithVotesByProductIDHandler)
 		productReviewGroup.POST("/add", reviewHandler.PostReviewHandler)
-		cartGroup.POST("/remove", cartHandler.RemoveFromCartHandler)
+		productReviewGroup.POST("/upvote", reactiontHandler.UpVoteHandler)
+		productReviewGroup.POST("/downvote", reactiontHandler.DownVoteHandler)
+
+		// cartGroup.POST("/remove", cartHandler.RemoveFromCartHandler)
 	}
 
 	replyReviewGroup := router.Group("/reviewReply")
@@ -133,7 +137,7 @@ func main() {
 		replyReviewGroup.POST("", replyHandler.PostReply)
 	}
 	
-	router.GET("/notif", NotificationHandler.GetNotificationsHandler)
+	router.GET("/notif", notificationHandler.GetNotificationsHandler)
 	
 	err = router.Run(":8081")
 	if err != nil {
