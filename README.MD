@@ -67,7 +67,7 @@ docker-compose down
 #### GUI
 First the python and its dependencies should be installed:
  - Tkinter -> the GUI library
- - Networks -> for https requests the back-end
+ - Networks -> for https requests to the back-end
 
 In order to run the application enter:
 ```
