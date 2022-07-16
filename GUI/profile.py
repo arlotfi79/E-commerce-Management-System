@@ -46,7 +46,7 @@ def showOrders(account_token):
     for order in listOforders:
         temp = order.json()
         Button(order_screen, text=temp["description"] + " / " + temp["orderDate"], width=300, height=5, font=("Calibri", 13),
-               command=lambda: showOrderDetails(temp["id"], account_token)).pack()
+               command=lambda: showOrderDetails(temp, account_token)).pack()
 
 
 

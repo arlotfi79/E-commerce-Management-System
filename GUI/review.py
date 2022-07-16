@@ -1,5 +1,7 @@
 from tkinter import *
 
+import requests
+
 global addMassage_Screen
 global massage_Screen
 global addreview_Screen
@@ -95,7 +97,11 @@ def showMassages(reviewId, account_token):
 
 
 def showReviews(productID, account_token):
-    reviews = {}  #{id: subject}  TODO: get rewiews
+    while True:
+        response = requests.get('http://localhost:8082/productReview', json= {"id": productID}, headers={'Authorization': 'Bearer ' + account_token})
+        if response.status_code == 200:
+            reviews = response.json()
+            break
 
     review_screen = Toplevel()
     review_screen.title("Reviews")
@@ -104,9 +110,10 @@ def showReviews(productID, account_token):
     Label(review_screen, text="Reviews", font=("Calibri", 13), bg="#0099d8", width="300", height="2").pack()
     Label(review_screen, text="").pack()
 
-    for r in reviews.keys():
-        Button(review_screen, text= reviews[r], width=300, height=5, font=("Calibri", 13), command= lambda: showMassages(r)).pack()
+    for r in reviews:
+        description = r.json()["description"]
+        Button(review_screen, text= description, width=300, height=5, font=("Calibri", 13), command= lambda: showMassages(r["id"], account_token)).pack()
 
 
     Label(review_screen, text="").pack()
-    Button(text="Add review", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=lambda: addReview(productID)).pack()
+    Button(text="Add review", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=lambda: addReview(productID, account_token)).pack()

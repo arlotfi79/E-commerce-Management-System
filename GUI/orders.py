@@ -1,5 +1,7 @@
 from tkinter import *
 
+import requests
+
 global addMassage_Screen
 
 def _addMassage(textInput, account_token):
@@ -39,9 +41,17 @@ def track(orderId, account_token):
     Button(track_screen, text="Add new massage", width=30, height=2, bg="#0099d8",
            command= lambda: addMassage(account_token)).pack()
 
+def showtrack(orderId, account_token):
+    #TODO
 
-def showOrderDetails(orderId, account_token):
-    details = {}  #TODO: get order details
+    track_screen = Toplevel()
+    track_screen.title("Order Tracking")
+    track_screen.geometry("400x500")
+
+
+
+def showOrderDetails(orderDetails, account_token):
+    details = orderDetails
 
     product_screen = Toplevel()
     product_screen.title("Order Details")
@@ -57,4 +67,4 @@ def showOrderDetails(orderId, account_token):
 
 
     Button(product_screen, text="Track", width=30, height=2, bg="#0099d8",
-           command=lambda: track(orderId, account_token)).pack()
+           command=lambda: showtrack(details["id"], account_token)).pack()
