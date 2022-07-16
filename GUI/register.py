@@ -94,7 +94,7 @@ def register():
     lastName_entry.pack()
 
     Label(register_screen, text="").pack()
-    # Set last name
+    # Set Email
     email_lable = Label(register_screen, text="Email * ", font=font)
     email_lable.pack()
 

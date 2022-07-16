@@ -8,6 +8,7 @@ from main_store_screen import main_account_screen
 global username_verify
 global password_verify
 global login_screen
+global store_account_token
 
 def store_login_process(mainScreen):
     username = username_verify.get()
@@ -19,8 +20,8 @@ def store_login_process(mainScreen):
     })
 
     if response.status_code == 200:
-        global account_token
-        account_token = response.json()['access_token']
+        global store_account_token
+        store_account_token = response.json()['access_token']
         login_screen.destroy()
         main_account_screen(mainScreen)
     else:
