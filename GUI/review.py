@@ -62,6 +62,11 @@ def addMassage():
     Button(text="Add", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command= lambda:_addMassage(text)).pack()
 
 
+def upVote(reviewId):
+    pass
+
+def downVote(reviewId):
+    pass
 
 def showMassages(reviewId):
     global massage_Screen
@@ -80,6 +85,8 @@ def showMassages(reviewId):
 
     Label(massage_Screen, text="").pack()
     Button(text="Add massage", bg="#0099d8", height="2", width="30",font=("Calibri", 13), command=addMassage).pack()
+    Button(text="UpVote", bg="#018600", height="2", width="30", font=("Calibri", 13), command=lambda: upVote(reviewId)).pack()
+    Button(text="DownVote", bg="#c10100", height="2", width="30", font=("Calibri", 13), command=lambda: downVote(reviewId)).pack()
 
 
 

@@ -1,7 +1,15 @@
 from tkinter import *
+from store_login import store_account_token
+
+import requests
+
 
 def showStoreDetails(productId):
-    details = {}  #TODO: get details by ID
+    while True:
+        response = requests.get('http://localhost:8082/', headers={'Authorization': 'JWT ' + store_account_token})
+        if response.status_code == 200:
+            details = response.json()  #{id: name} #TODO: complete request
+            break
 
     store_screen = Toplevel()
     store_screen.title("Store Details")
