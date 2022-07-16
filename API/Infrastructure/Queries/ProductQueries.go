@@ -425,3 +425,23 @@ func (productQuery *ProductQuery) AddProductToOrder(orderID uint64, productID ui
 
 	return nil
 }
+
+func (productQuery *ProductQuery) AddNewProduct(product *DataSignatures.PostProduct) error {
+	db := productQuery.dbClient.GetDB()
+	query, err := db.Prepare(`INSERT INTO Product (name, color, price, weight, quantity)
+									VALUES ($1, $2, $3, $4, $5)`)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer query.Close()
+
+	_, err = query.Exec(product.Name, product.Color, product.Price, product.Weight, product.Quantity)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

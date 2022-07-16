@@ -19,10 +19,9 @@ func NewReplyQuery(dbClient *Database.Postgresql) *ReplyQuery {
 func (replyQuery *ReplyQuery) GetRepliesByReviewID(id uint64) ([]DataSignatures.GetReply, error) {
 	db := replyQuery.dbClient.GetDB()
 
-	query, err := db.Prepare(`SELECT *
-									FROM Review AS r
-									INNER JOIN Review_Reply AS rr ON r.review_id = rr.review_id
-									WHERE rr.review_id = $1`)
+	query, err := db.Prepare(`SELECT reply_id, reply_text
+									FROM Review_Reply 
+									WHERE review_id = $1`)
 
 	if err != nil {
 		log.Fatal(err)
