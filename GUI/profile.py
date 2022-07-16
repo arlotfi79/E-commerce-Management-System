@@ -25,7 +25,7 @@ def showNotifications(account_token):
     if response.status_code == 200:
         notifs = response.json()
         for m in notifs:
-            temp = m.json()
+            temp = m
             Text(notif_screen, height=5, width=300, font=("Calibri", 13)).insert('end', temp["description"])
 
 
@@ -44,7 +44,7 @@ def showOrders(account_token):
     Label(order_screen, text="").pack()
 
     for order in listOforders:
-        temp = order.json()
+        temp = order
         Button(order_screen, text=temp["description"] + " / " + temp["orderDate"], width=300, height=5, font=("Calibri", 13),
                command=lambda: showOrderDetails(temp, account_token)).pack()
 

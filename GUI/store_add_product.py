@@ -120,6 +120,6 @@ def addProduct(account_token):
     Label(categories_screen, text="").pack()
 
     for cat in categories:
-        cat_id = cat.json().keys()[0]
-        name = cat.json().values()[1]
+        cat_id = cat.keys()[0]
+        name = cat.values()[1]
         Button(categories_screen, text=str(name), width=30, height=2, bg="#0099d8", command=lambda: addProductToCategory(cat_id, account_token)).pack()

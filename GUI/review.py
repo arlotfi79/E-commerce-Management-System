@@ -111,7 +111,7 @@ def showReviews(productID, account_token):
     Label(review_screen, text="").pack()
 
     for r in reviews:
-        description = r.json()["description"]
+        description = r["description"]
         Button(review_screen, text= description, width=300, height=5, font=("Calibri", 13), command= lambda: showMassages(r["id"], account_token)).pack()
 
 

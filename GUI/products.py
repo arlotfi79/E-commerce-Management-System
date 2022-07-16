@@ -43,7 +43,7 @@ def showProductDetails(productDetails, categoryName, account_token):
             break
 
     for p in range(0, len(products), 2):
-        name = products[p].json()["name"]
+        name = products[p]["name"]
         Button(product_screen, text= str(name), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p,categoryName, account_token)).pack()
 
 
@@ -64,7 +64,7 @@ def showAllProductsInCategory(categoryID, categoryName, account_token):
     Label(all_product_screen, text="").pack()
 
     for p in products:
-        name = p.json()["name"]
+        name = p["name"]
         Button(all_product_screen, text= str(name), width=300, height=5, font=("Calibri", 13), command= lambda: showProductDetails(p,categoryName, account_token)).pack()
 
 
