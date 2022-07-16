@@ -47,6 +47,7 @@ func main() {
 	var tickHandle Handlers.TicketHandler
 	var messageHandle Handlers.MessageHandler
 	var cartHandle Handlers.CartHandler
+	var addressHandle Handlers.AddressHandler
 
 	accountHandler := accHandle.NewAccountHandler(&db, redisService.Auth, tokenInt)
 	categHandler := categHandle.NewCategoryHandler(&db, redisService.Auth, tokenInt)
@@ -56,18 +57,25 @@ func main() {
 	tickHandler := tickHandle.NewTicketHandler(&db, redisService.Auth, tokenInt)
 	messageHandler := messageHandle.NewTMessageHandler(&db, redisService.Auth, tokenInt)
 	cartHandler := cartHandle.NewCartHandler(&db, redisService.Auth, tokenInt)
+	addressHandler := addressHandle.NewAddressHandler(&db, redisService.Auth, tokenInt)
 
 	router.POST("/signup", accountHandler.SignUpHandler)
 	router.POST("/signin", accountHandler.SigninHandler)
 	router.GET("/profile", accountHandler.ProfileHandler)
 
-	categoryGroup := router.Group("category")
+	categoryGroup := router.Group("/category")
 	{
 		categoryGroup.GET("/all", categHandler.GetAllCategoriesHandler)
 		categoryGroup.POST("/addNew", categHandler.AddNewCategoryHandler)
 	}
 
-	productGroup := router.Group("product")
+	addressGroup := router.Group("/address")
+	{
+		addressGroup.POST("/addNew", addressHandler.AddAddressToAccount)
+		addressGroup.GET("/getAddresses", addressHandler.GetAddressByAccountID)
+	}
+
+	productGroup := router.Group("/product")
 	{
 		productGroup.GET("/byCategory", prodHandler.ProductByCategoryNameHandler)
 		productGroup.POST("/addNewProduct", prodHandler.AddNewProductHandler)

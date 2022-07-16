@@ -53,7 +53,7 @@ func (addressQuery *AddressQuery) GetAddressesByAccountID(id uint64) ([]DataSign
 
 // -------------------------------- POST ----------------------------------
 
-func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID uint64, address *DataSignatures.Address) error {
+func (addressQuery *AddressQuery) PutAddressUsingAccountID(accountID uint64, address *DataSignatures.PostAddress) error {
 	db := addressQuery.dbClient.GetDB()
 
 	query, err := db.Prepare(`INSERT INTO address (account_id, country, city, street, plaque)
