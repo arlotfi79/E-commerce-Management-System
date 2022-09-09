@@ -88,3 +88,6 @@ that the database is abstract as seen from the controllers. In order to authoriz
 
 ### PostgreSQL
 PostgreSQL  is used as the relational DBMS of the application.
+
+### Redis
+Redis, which is a light in-memory database, is used to store the temporary information, such as user authorization tokens.
